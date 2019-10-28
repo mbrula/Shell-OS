@@ -1,0 +1,15 @@
+{
+    "files.exclude": {
+        "**/*.sh": true,
+        "**/*.o": true,
+        "**/*.bin": false,
+        "**/*.inc": true,
+        "**/*.txt": true,
+        "**/*.md": true,
+        "**/*.gitignore": true,
+        "**/Makefile": true,
+        "Bootloader": true,
+        "Image": true,
+        "Toolchain": true
+    }
+}
