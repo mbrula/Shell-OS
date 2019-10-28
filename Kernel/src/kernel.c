@@ -7,6 +7,7 @@
 #include <defs.h>
 #include <videoDriver.h>
 #include <console.h>
+#include <moduleAddresses.h>
 //#include <time.h>
 
 extern uint8_t text;
@@ -18,63 +19,55 @@ extern uint8_t endOfKernel;
 
 static const uint64_t PageSize = 0x1000;
 
-static void * const sampleCodeModuleAddress = (void*)0x400000;
-static void * const sampleDataModuleAddress = (void*)0x500000;
 
 typedef int (*EntryPoint)();
 
-void goToUserland(){
-	((EntryPoint)sampleCodeModuleAddress)();
+void goToUserland() {
+	((EntryPoint)shellModuleAddress)();
 }
 
-void clearBSS(void * bssAddress, uint64_t bssSize)
-{
+void clearBSS(void * bssAddress, uint64_t bssSize) {
 	memset(bssAddress, 0, bssSize);
 }
 
-void * getStackBase()
-{
-	return (void*)(
+void * getStackBase() {
+	return (void*) (
 		(uint64_t)&endOfKernel
 		+ PageSize * 8				//The size of the stack itself, 32KiB
 		- sizeof(uint64_t)			//Begin at the top of the stack
 	);
 }
 
-void * initializeKernelBinary()
-{
+void * initializeKernelBinary() {
 	char buffer[10];
 
 	cpu_vendor(buffer);
 
-	// Llena con los addresses a donde copia los modulos
+	/* Fills with addresses where copies the modules */
 	void * moduleAddresses[] = {
-		sampleCodeModuleAddress,
-		sampleDataModuleAddress
+		shellModuleAddress,
+		processAModuleAddress,
+		processBModuleAddress,
+		idleModuleAddress,
+		sleepModuleAddress,
+		loopModuleAddress,
+		catModuleAddress,
+		wcModuleAddress,
+		filterModuleAddress,
+		phyloModuleAddress
 	};
 
 	loadModules(&endOfKernelBinary, moduleAddresses);
 
 	clearBSS(&bss, &endOfKernel - &bss);
 
-	initVideoDriver();
+	init_video_driver();
   	init_console();
 	
 	load_idt();
 
 	return getStackBase();
 }
-
-// int main() {
-// 	clear();
-// 	// Load IDT table
-// 	load_idt();	
-
-// 	// Execute userland code
-// 	((EntryPoint)sampleCodeModuleAddress)();
-
-// 	return 0;
-// }
 
 int main() {
     // ncClear();

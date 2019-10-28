@@ -1,7 +1,6 @@
 #ifndef CONSOLE_H_
 #define CONSOLE_H_
 
-#include <types.h>
 #include <pixelMap.h>
 #include <strings.h>
 #include <stdarg.h>

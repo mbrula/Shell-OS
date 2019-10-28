@@ -1,10 +1,12 @@
-//
-// Created by nacho on 10/06/19.
-//
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+#include <stdint.h>
+#include <lib.h>
+#include <pixelMap.h>
 
 #include <videoDriver.h>
 
-// Struct taken from https://wiki.osdev.org/Getting_VBE_Mode_Info
+/* Struct taken from https://wiki.osdev.org/Getting_VBE_Mode_Info */
 typedef struct __attribute__((packed)) {
     uint16_t attributes;
     uint8_t win_A,win_B;
@@ -30,57 +32,55 @@ typedef struct __attribute__((packed)) {
     uint16_t reserved2;
 } ModeInfoBlock;
 
-static ModeInfoBlock* infoBlock;
+static ModeInfoBlock * infoBlock;
 
-// Relevo de informacion de la pantalla
-void initVideoDriver() {
+/* Init screen information */
+void init_video_driver() {
     infoBlock = (ModeInfoBlock*)0x0000000000005C00;
 }
 
-// Checkear si la posicion esta dentro de la pantalla
-int out_of_range_pixel(Vector2 pos) {
+/* Checks if pos is inside the screen */
+static int64_t out_of_range_pixel(Point pos) {
     return !((pos.x >= 0) && (pos.x <= infoBlock->x_res) && (pos.y >= 0) && (pos.y <= infoBlock->y_res));
 }
 
-// Dibujar un pixel a pantalla
-void draw_pixel(Vector2 pos, Color color){
+/* Dibujar un pixel a pantalla */
+void draw_pixel(Point pos, Color color){
     if (out_of_range_pixel(pos))
         return;
     
-    unsigned char * pixel_address;
-    int bpp = infoBlock->bpp / 8;
-    pixel_address = (unsigned char *) ((uint64_t)(infoBlock->physbase + pos.x * bpp  + pos.y * (infoBlock->x_res) * bpp));
+    uint8_t * pixel_address;
+    uint64_t bpp = infoBlock->bpp / 8;
+    pixel_address = (uint8_t *) ((uint64_t)(infoBlock->physbase + pos.x * bpp  + pos.y * (infoBlock->x_res) * bpp));
     pixel_address[0] = color.b;
     pixel_address[1] = color.g;
     pixel_address[2] = color.r;
 }
 
-
-// Mover todas las lineas una para arriba
-void move_all_lines_up(){
-  void * source = (void *)((uint64_t)(infoBlock->physbase + (infoBlock->bpp/8) * infoBlock->x_res * CHAR_HEIGHT));
-  void * dest = (void *)((uint64_t)infoBlock->physbase);
-  int size = (((infoBlock->bpp/8) * (infoBlock->x_res-1) *  infoBlock->y_res)-(infoBlock->bpp/8) * infoBlock->x_res * CHAR_HEIGHT);
-  infoBlock->physbase = ((uint64_t)(memcpy(dest, source, size)));
-}
-
-
-// Relevar color de pixel en cierta posicion
-void get_pixel(Vector2 pos, Color* out){
+/* Gets pixel color on certain position */
+void get_pixel(Point pos, Color* out){
     if (out_of_range_pixel(pos))
         return;
 
-    unsigned char * pixel_address;
-    int bpp = infoBlock->bpp / 8;
-    pixel_address = (unsigned char *) ((uint64_t)(infoBlock->physbase + pos.x * bpp + pos.y * (infoBlock->x_res) * bpp));
+    uint8_t * pixel_address;
+    uint64_t bpp = infoBlock->bpp / 8;
+    pixel_address = (uint8_t *) ((uint64_t)(infoBlock->physbase + pos.x * bpp + pos.y * (infoBlock->x_res) * bpp));
     out->b = pixel_address[0];
     out->g = pixel_address[1];
     out->r = pixel_address[2];
 }
 
-// Obsoleto: Dibujar rectangulo
-void draw_rect(Vector2 pos, Vector2 size, Color color){
-    Vector2 auxPos = {0,0};
+/* Move all lines one up */
+void move_all_lines_up() {
+  void * source = (void *)((uint64_t)(infoBlock->physbase + (infoBlock->bpp/8) * infoBlock->x_res * CHAR_HEIGHT));
+  void * dest = (void *)((uint64_t)infoBlock->physbase);
+  uint64_t size = (((infoBlock->bpp/8) * (infoBlock->x_res-1) *  infoBlock->y_res)-(infoBlock->bpp/8) * infoBlock->x_res * CHAR_HEIGHT);
+  infoBlock->physbase = ((uint64_t)(memcpy(dest, source, size)));
+}
+
+/* Draws a rectangule */
+void draw_rect(Point pos, Point size, Color color) {
+    Point auxPos = {0,0};
     for (auxPos.y = pos.y; auxPos.y < pos.y + size.x; auxPos.y++) {
         for (auxPos.x = pos.x; auxPos.x < pos.x + size.x; auxPos.x++) {
             draw_pixel(auxPos, color);
@@ -88,26 +88,23 @@ void draw_rect(Vector2 pos, Vector2 size, Color color){
     }
 }
 
-// Dibujar caracter en pantalla
-// Se utiliza pixel_map, el cual contiene cada letra, pixel por pixel
-void draw_char_with_background(Vector2 pos, char c, Color foreground, Color background){
-    unsigned char * cMap = pixel_map(c);
-    for (int j = 0; j < CHAR_HEIGHT; ++j) {
-        for (int i = 0; i < CHAR_WIDTH; ++i) {
-            Vector2 aux = {(pos.x*(CHAR_WIDTH))+i, (pos.y*CHAR_HEIGHT)+j};
+/* Draws character on screen, uses pixel_map wich contains each letter pixel per pixel */
+void draw_char_with_background(Point pos, char c, Color foreground, Color background){
+    uint8_t * cMap = pixel_map(c);
+    for (uint64_t j = 0; j < CHAR_HEIGHT; ++j) {
+        for (uint64_t i = 0; i < CHAR_WIDTH; ++i) {
+            Point aux = {(pos.x * (CHAR_WIDTH)) + i, (pos.y * CHAR_HEIGHT) + j};
             if((cMap[j] >> (CHAR_WIDTH - i - 1)) & 1) // NO se porque el -1, pero funciona...
                 draw_pixel(aux,foreground);
             else
                 draw_pixel(aux, background);
         }
-
     }
-
 }
 
-//Obsoleto: Dibujar string a pantalla
-void draw_string_with_background(Vector2 pos, char * str, Color foreground, Color background){
-    Vector2 auxPos = {pos.x,pos.y};
+/* Draws string on screen */
+void draw_string_with_background(Point pos, char * str, Color foreground, Color background){
+    Point auxPos = {pos.x,pos.y};
 
     while((*str) != 0) {
         draw_char_with_background(auxPos, (*str), foreground, background);
@@ -116,9 +113,12 @@ void draw_string_with_background(Vector2 pos, char * str, Color foreground, Colo
     }
 }
 
-int getResX(){
+/* Gets x resolution of the screen*/
+uint16_t get_res_x(){
     return infoBlock->x_res;
 }
-int getResY(){
+
+/* Gets y resolution of the screen */
+uint16_t get_res_y(){
     return infoBlock->y_res;
 }

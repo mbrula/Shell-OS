@@ -5,8 +5,8 @@
 #include <types.h>
 #include <pixelMap.h>
 
-void drawRect(Vector2 start, Vector2 size, Color color);
+void drawRect(Point start, Point size, Color color);
 
-void drawString(Vector2 pos, char * str, Color foreground, Color background);
+void drawString(Point pos, char * str, Color foreground, Color background);
 
 #endif /* GRAPHICS_LIBRARY_H_ */

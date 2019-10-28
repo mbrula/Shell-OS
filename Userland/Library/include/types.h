@@ -11,12 +11,12 @@ typedef struct Color{
     unsigned char b;
 }Color;
 
-typedef struct Vector2{
+typedef struct Point{
     int x;
     int y;
-}Vector2;
+}Point;
 
-static const Vector2 ZeroVector = {0,0};
+static const Point ZeroVector = {0,0};
 
 static const Color COLOR_WHITE = {255, 255, 255};
 static const Color COLOR_BLACKED = {29, 29, 29};

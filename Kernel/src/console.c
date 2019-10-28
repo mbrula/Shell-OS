@@ -10,17 +10,17 @@ Color errorForeground = {255,0,0};
 
 Color okForeground = {0, 255, 0};
 
-static Vector2 ZeroVector = {0,0};
-static Vector2 cursor = {0,0};
+static Point ZeroVector = {0,0};
+static Point cursor = {0,0};
 
 int get_max_line();
 
 int get_max_cursorY(){
-    return getResY() / CHAR_HEIGHT;
+    return get_res_y() / CHAR_HEIGHT;
 }
 
 int get_max_cursorX(){
-    return getResX() / CHAR_WIDTH;
+    return get_res_x() / CHAR_WIDTH;
 }
 
 void init_console(){
@@ -82,11 +82,11 @@ void printWithColors(Color chosenForeground, Color chosenBackground, char * str,
         }
 
 
-        if(cursor.x >= getResX()/CHAR_WIDTH){
+        if(cursor.x >= get_res_x()/CHAR_WIDTH){
             cursor.x = 0;
             cursor.y++;
         }
-        if(cursor.y >= getResY()/CHAR_HEIGHT){
+        if(cursor.y >= get_res_y()/CHAR_HEIGHT){
             move_all_up();
             cursor.y--;
         }
@@ -114,7 +114,7 @@ void print_char(char c){
 
     //Empezar una nueva linea si el cursor se pasa del
     //maximo x posible
-    if(cursor.x >= getResX()/CHAR_WIDTH){
+    if(cursor.x >= get_res_x()/CHAR_WIDTH){
         cursor.x = 0;
         cursor.y++;
     }
@@ -122,7 +122,7 @@ void print_char(char c){
     //Mover todo el contenido una linea para arriba
     //si se necesita una nueva linea y el cursor esta
     //en la posicion mas baja de la pantalla
-    if(cursor.y >= getResY()/CHAR_HEIGHT){
+    if(cursor.y >= get_res_y()/CHAR_HEIGHT){
         move_all_up();
         cursor.y--;
     }
@@ -148,7 +148,7 @@ void printError_char(char c){
 
     //Empezar una nueva linea si el cursor se pasa del
     //maximo x posible
-    if(cursor.x >= getResX()/CHAR_WIDTH){
+    if(cursor.x >= get_res_x()/CHAR_WIDTH){
         cursor.x = 0;
         cursor.y++;
     }
@@ -156,7 +156,7 @@ void printError_char(char c){
     //Mover todo el contenido una linea para arriba
     //si se necesita una nueva linea y el cursor esta
     //en la posicion mas baja de la pantalla
-    if(cursor.y >= getResY()/CHAR_HEIGHT){
+    if(cursor.y >= get_res_y()/CHAR_HEIGHT){
         move_all_up();
         cursor.y--;
     }
@@ -199,10 +199,10 @@ void printError(char * str, ...){
 //Obsolete: Mover una linea para arriba
 void move_line_up(unsigned int line){
     Color c = {0,0,0};
-    Vector2 posGet = {0,line*CHAR_HEIGHT};
-    Vector2 posDraw = {0,(line-1)*CHAR_HEIGHT};
+    Point posGet = {0,line*CHAR_HEIGHT};
+    Point posDraw = {0,(line-1)*CHAR_HEIGHT};
     for(int j = 0; j < CHAR_HEIGHT; j++){
-        for (int i = 0; i < getResX(); ++i)
+        for (int i = 0; i < get_res_x(); ++i)
         {
             get_pixel(posGet, &c);
             draw_pixel(posDraw, c);
@@ -223,9 +223,9 @@ void move_all_up(){
 
 // Borrar linea
 void clear_line(unsigned int line){
-    Vector2 posDraw = {0,line*CHAR_HEIGHT};
+    Point posDraw = {0,line*CHAR_HEIGHT};
     for(int j = 0; j < CHAR_HEIGHT; j++){
-        for (int i = 0; i < getResX(); ++i)
+        for (int i = 0; i < get_res_x(); ++i)
         {
             draw_pixel(posDraw, background);
             posDraw.x++;
@@ -237,12 +237,12 @@ void clear_line(unsigned int line){
 
 // Limpiar pantalla
 void clear_console(){
-    Vector2 size = {getResX(), getResY()};
+    Point size = {get_res_x(), get_res_y()};
     draw_rect(ZeroVector, size, background);
     cursor.x = 0;
     cursor.y = get_max_line()-1;
 }
 
 int get_max_line(){
-    return getResY() / CHAR_HEIGHT;
+    return get_res_y() / CHAR_HEIGHT;
 }

@@ -1,5 +1,5 @@
-#ifndef PIXELMAP_H_
-#define PIXELMAP_H_
+#ifndef _PIXEL_MAP_H_
+#define _PIXEL_MAP_H_
 
 unsigned char * pixel_map(int c);
 
@@ -263,4 +263,4 @@ unsigned char * pixel_map(int c);
 #define XXXXXXX_ 0xFE
 #define XXXXXXXX 0xFF
 
-#endif /* PIXELMAP_H_ */
+#endif /* _PIXEL_MAP_H_ */

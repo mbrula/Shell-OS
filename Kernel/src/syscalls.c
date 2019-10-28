@@ -53,16 +53,7 @@ void beep_handler(uint16_t frequency, uint64_t millis) {
 }
 
 void pixel_handler(uint64_t x, uint64_t y, uint64_t rgb) {
-    Vector2 auxPos = {x, y};
+    Point auxPos = {x, y};
     Color auxColor = {(rgb & 0xFF0000) >> 16, (rgb & 0x00FF00) >> 8, rgb & 0x0000FF};
     draw_pixel(auxPos, auxColor);
-
-    // ncPrintDec(rgb);
-    // ncNewline();
-    // ncPrintDec(auxColor.r);
-    // ncNewline();
-    // ncPrintDec(auxColor.g);
-    // ncNewline();
-    // ncPrintDec(auxColor.b);
-    // ncNewline();
 }

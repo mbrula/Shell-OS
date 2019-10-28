@@ -1,23 +1,46 @@
-#ifndef VIDEODRIVER_H_
-#define VIDEODRIVER_H_
+#ifndef _VIDEO_DRIVER_H_
+#define _VIDEO_DRIVER_H_
 
 #include <stdint.h>
-#include <lib.h>
-#include <pixelMap.h>
-#include <types.h>
 
-void initVideoDriver(void);
+/* RGB color structure */
+typedef struct color {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+} Color;
 
-void draw_pixel(Vector2 pos, Color color);
-void get_pixel(Vector2 pos, Color* out);
+/* 2D point structure */
+typedef struct point {
+    uint16_t x;
+    uint16_t y;
+} Point;
 
-void draw_rect(Vector2 pos, Vector2 size, Color color);
-void draw_char_with_background(Vector2 pos, char c, Color foreground, Color background);
-void draw_string_with_background(Vector2 pos, char * str, Color foreground, Color background);
+/* Init screen information */
+void init_video_driver(void);
 
-int getResX(void);
-int getResY(void);
-void move_all_lines_up(void);
+/* Dibujar un pixel a pantalla */
+void draw_pixel(Point pos, Color color);
 
+/* Gets pixel color on certain position */
+void get_pixel(Point pos, Color* out);
 
-#endif /* VIDEODRIVER_H_ */
+/* Move all lines one up */
+void move_all_lines_up();
+
+/* Draws a rectangule */
+void draw_rect(Point pos, Point size, Color color);
+
+/* Draws character on screen, uses pixel_map wich contains each letter pixel per pixel */
+void draw_char_with_background(Point pos, char c, Color foreground, Color background);
+
+/* Draws string on screen */
+void draw_string_with_background(Point pos, char * str, Color foreground, Color background);
+
+/* Gets x resolution of the screen*/
+uint16_t get_res_x(void);
+
+/* Gets y resolution of the screen*/
+uint16_t get_res_y(void);
+
+#endif /* _VIDEO_DRIVER_H_ */
