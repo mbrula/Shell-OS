@@ -1,2 +1,2 @@
-# OS
-A Shell Operating System, with memory manager, scheduling, IPC and more.
+# TPOueS
+Trabajo Practico destinado para la materia de Arquitectura de Computadoras.
