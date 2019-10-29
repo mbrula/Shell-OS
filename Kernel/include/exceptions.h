@@ -3,11 +3,10 @@
 
 #include <stdint.h>
 
+/* Exception Dispatcher function */
 void exceptionDispatcher(int exc);
-void getRegisters();
 
-// Estructura que queda en el stack luego de saltar a una excepcion
-// Solo buscamos el rip (instruction pointer)
+/* Struct on stack after exception is launched (rip is the only one used) */
 typedef struct {
     uint64_t stack_segment;
     uint64_t stack_ptr;
@@ -17,7 +16,7 @@ typedef struct {
     uint64_t errCode;
 } ExceptionStackFrame;
 
-// Estructura para completar con los valores de todos los registros
+/* Struct to complete al values from all registres */
 typedef struct {
     uint64_t rax;
     uint64_t rbx;
@@ -31,4 +30,4 @@ typedef struct {
     uint64_t r9;
 } RegisterSet;
 
-#endif /* EXCEPTIONS_H_ */
+#endif /* _EXCEPTIONS_H_ */

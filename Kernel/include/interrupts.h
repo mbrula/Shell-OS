@@ -1,12 +1,5 @@
- /*
- *   interrupts.h
- *
- *  Created on: Apr 18, 2010
- *      Author: anizzomc
- */
-
-#ifndef INTERRUPS_H_
-#define INTERRUPS_H_
+#ifndef _INTERRUPS_H_
+#define _INTERRUPS_H_
 
 #include <idtLoader.h>
 
@@ -22,8 +15,13 @@ void _sirqHandler(void);
 void _exception00Handler(void);
 void _exception06Handler(void);
 
+/* Clears all interrupts */
 void _cli(void);
+
+/* Sets all interrupts */
 void _sti(void);
+
+/* Halt processor */
 void _hlt(void);
 void halt(void);
 
@@ -31,7 +29,7 @@ void picMasterMask(uint8_t mask);
 
 void picSlaveMask(uint8_t mask);
 
-//Termina la ejecución de la cpu.
+/* Finishes CPU ejecution */
 void haltcpu(void);
 
-#endif /* INTERRUPS_H_ */
+#endif /* _INTERRUPS_H_ */

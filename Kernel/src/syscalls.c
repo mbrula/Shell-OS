@@ -7,6 +7,9 @@
 #include <naiveConsole.h>
 #include <sound.h>
 
+/* Located on loader.asm */
+extern void hang();
+
 void read_handler(uint64_t fd, char * buff, uint64_t count) {
     // File descriptor doesn't matter
     for (int i = 0; i < count; i ++)
@@ -52,6 +55,10 @@ void beep_handler(uint16_t frequency, uint64_t millis) {
     play_sound(frequency);
     sleep_handler(millis);
     no_sound();
+}
+
+void exit_handler() {
+    hang();
 }
 
 void pixel_handler(uint64_t x, uint64_t y, uint64_t rgb) {

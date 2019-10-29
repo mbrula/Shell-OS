@@ -72,17 +72,6 @@ void * initializeKernelBinary() {
 }
 
 int main() {
-    // ncClear();
     goToUserland();
-	// ncNewline();
-
-	// int i = 0;
-	// char car;
-    // while (i < 10) {
-    //     if ((car = read_character()) != 0){
-	// 		ncPrintChar(car);
-	// 		i++;
-	// 	}
-    // }
 	return 0;
 }
