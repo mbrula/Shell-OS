@@ -1,5 +1,5 @@
-
 #include <stdint.h>
+
 #include <strings.h>
 
 /* Gets string length */

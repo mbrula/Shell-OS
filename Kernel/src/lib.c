@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+/* Sets on memory the character */
 void * memset(void * destination, int32_t c, uint64_t length) {
 	uint8_t chr = (uint8_t)c;
 	char * dst = (char*)destination;
@@ -10,6 +11,7 @@ void * memset(void * destination, int32_t c, uint64_t length) {
 	return destination;
 }
 
+/* Copies on destination, length characters from source */
 void * memcpy(void * destination, const void * source, uint64_t length) {
 	/*
 	* memcpy does not support overlapping buffers, so always do it
@@ -40,4 +42,30 @@ void * memcpy(void * destination, const void * source, uint64_t length) {
 	}
 
 	return destination;
+}
+
+/* Gets pow */
+uint64_t pow(int base, int exponent) {
+	int result = 1;
+	for (uint64_t i = 0; i < exponent; i++){
+		result = result * base;
+	}
+	return result;
+}
+
+/* Converts a number to base 2, returns exponent */
+uint64_t exp2(uint64_t number) {
+	uint64_t exp = 1;
+	float aux = (float)number;
+	while (aux > 2) {
+		aux /= 2;
+		exp++;
+	}
+	return exp;
+}
+
+/* Returns max given two values */
+uint64_t max(uint64_t n1, uint64_t n2) {
+	if (n1 >= n2) return n1;
+	return n2;
 }

@@ -1,9 +1,15 @@
 GLOBAL cpu_vendor
 GLOBAL write_port
 GLOBAL read_port
-
+GLOBAL force_timer_tick
+GLOBAL atom_swap
 
 section .text
+
+; void lock_sem(uint64_t * dir, uint64_t value)
+atom_swap:
+	xchg [rdi], rsi
+	ret
 
 ; void write_port(char port, char reg)
 write_port:
@@ -18,6 +24,10 @@ read_port:
 	in al, dx
 	ret
 
+; void force_timer_tick()
+force_timer_tick:
+	int 20h
+	ret
 
 cpu_vendor:
 	push rbp

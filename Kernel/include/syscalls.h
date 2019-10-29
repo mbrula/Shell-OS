@@ -1,5 +1,5 @@
-#ifndef SYSCALLS_H_
-#define SYSCALLS_H_
+#ifndef _SYSCALLS_H_
+#define _SYSCALLS_H_
 
 #include <stdint.h>
 #include <lib.h>
@@ -15,4 +15,4 @@ void pixel_handler(uint64_t x, uint64_t y, uint64_t rgb);
 
 uint64_t handleSyscall(uint64_t sirq, uint64_t rdi, uint64_t rsi, uint64_t rdx);
 
-#endif
+#endif /* _SYSCALLS_H_ */

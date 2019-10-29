@@ -1,13 +1,15 @@
+#include <pixelMap.h>
+#include <strings.h>
+#include <stdarg.h>
+#include <videoDriver.h>
+
 #include <console.h>
 
 #define MAX_BUFFER 100
 
 Color background = {29,29,29};
-
 Color foreground = {255,255,255};
-
 Color errorForeground = {255,0,0};
-
 Color okForeground = {0, 255, 0};
 
 static Point ZeroVector = {0,0};

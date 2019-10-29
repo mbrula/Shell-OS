@@ -15,6 +15,7 @@
         "Userland": true
     },
     "files.associations": {
-        "lib.h": "c"
+        "lib.h": "c",
+        "videodriver.h": "c"
     }
 }
