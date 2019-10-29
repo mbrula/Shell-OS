@@ -1,6 +1,8 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <syscalls.h>
 #include <keyboard.h>
-#include <time.h>
+#include <timelib.h>
 #include <console.h>
 #include <naiveConsole.h>
 #include <sound.h>

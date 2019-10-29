@@ -1,9 +1,6 @@
-// Created from bdf2c Version 3, (c) 2009, 2010 by Lutz Sammer
-//	License AGPLv3: GNU Affero General Public License version 3
-
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <pixelMap.h>
-
-// Characters 33 to 126 made by Nacho Villanueva
 
 unsigned char __font_pixelmap__[] = {
         ________,
