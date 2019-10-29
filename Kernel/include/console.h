@@ -45,6 +45,6 @@ void clear_line(uint64_t line);
 void clear_console();
 
 /* Gets max characters per line */
-int get_max_line()
+int get_max_line();
 
 #endif /* _CONSOLE_H_ */

@@ -54,7 +54,7 @@ void new_line(){
 }
 
 /* Prints a 0 ending string with the chosen color for background and foreground */
-void print_with_colors(Color chosenForeground, Color chosenBackground, char * str, va_list list){
+void print_with_colors(Color chosenForeground, Color chosenBackground, char * str, va_list list) {
 
     int i = 0;
     while (str[i] != 0) {
@@ -84,11 +84,11 @@ void print_with_colors(Color chosenForeground, Color chosenBackground, char * st
         }
 
 
-        if(cursor.x >= get_res_x() / CHAR_WIDTH){ 
+        if(cursor.x >= get_res_x() / CHAR_WIDTH) { 
             cursor.x = 0;
             cursor.y++;
         }
-        if(cursor.y >= get_res_y() / CHAR_HEIGHT) 
+        if(cursor.y >= get_res_y() / CHAR_HEIGHT) {
             move_all_up();
             cursor.y--;
         }
@@ -97,7 +97,7 @@ void print_with_colors(Color chosenForeground, Color chosenBackground, char * st
 }
 
 /* Print only one character on stdout */
-void print_char(char c){
+void print_char(char c) {
     switch(c) {
         case '\n':
             new_line(); break;
