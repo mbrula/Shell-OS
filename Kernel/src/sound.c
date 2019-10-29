@@ -1,8 +1,14 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+#include <lib.h>
+#include <stdint.h>
+
 #include <sound.h>
 
+/* Plays a sound given a frequency */
 void play_sound(uint32_t frequency) {
  	
-     //Set the PIT to the desired frequency
+    /* Set the PIT to the desired frequency */
     uint32_t div = 1193180 / frequency;
  	uint8_t aux;
 
@@ -10,13 +16,13 @@ void play_sound(uint32_t frequency) {
  	write_port(0x42, (uint8_t) (div) );
  	write_port(0x42, (uint8_t) (div >> 8));
  
-    //Playing the sound using the PC speaker
+    /* Playing the sound using the PC speaker */
  	aux = read_port(0x61);
   	if (aux != (aux | 3))
  		write_port(0x61, aux | 3);
  }
  
- //Stop sound
+/* Stop sound */
  void no_sound() {
  	uint8_t aux = read_port(0x61) & 0xFC;
  	write_port(0x61, aux);

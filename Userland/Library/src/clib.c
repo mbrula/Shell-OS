@@ -125,8 +125,8 @@ void printfFd(uint64_t fd, char * str, ...) {
 }
 
 char getchar() {
-    char character;
-    syscall(READ_ID, STDIN, (uint64_t) &character, 1, 0, 0, 0);
+    char character = 0;
+    while( character == 0) syscall(READ_ID, STDIN, (uint64_t) &character, 1, 0, 0, 0);
     return character;
 }
 
@@ -153,8 +153,8 @@ int gets(char * string, uint64_t size) {
 }
 
 char getcharFd(uint64_t fd) {
-    char character;
-    syscall(READ_ID, fd, (uint64_t) &character, 1, 0, 0, 0);
+    char character = 0; // TODO change dis
+    while(character == 0) syscall(READ_ID, fd, (uint64_t) &character, 1, 0, 0, 0);
     return character;
 }
 

@@ -6,11 +6,15 @@
         "**/*.inc": true,
         "**/*.txt": true,
         "**/*.md": true,
+        "**/*.elf": true,
         "**/*.gitignore": true,
         "**/Makefile": false,
         "Bootloader": true,
         "Image": true,
         "Toolchain": true,
         "Userland": true
+    },
+    "files.associations": {
+        "lib.h": "c"
     }
 }
