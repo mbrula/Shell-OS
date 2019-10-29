@@ -1,35 +1,50 @@
-#ifndef CONSOLE_H_
-#define CONSOLE_H_
+#ifndef _CONSOLE_H_
+#define _CONSOLE_H_
 
+#include <stdint.h>
+#include <stdarg.h>
 #include <videoDriver.h>
 
+/* Initializes the console */
 void init_console();
 
+/* Deletes a character */
 void backspace();
 
-void printWithColors(Color chosenForeground, Color chosenBackground, char * str, va_list list);
+/* Prints a 0 ending string with the chosen color for background and foreground */
+void print_with_colors(Color chosenForeground, Color chosenBackground, char * str, va_list list);
 
-void print(char * str, ...);
-
-void print_N(const char * src, int length);
-
-void printError_N(const char * str, int length);
-
+/* Print only one character on stdout */
 void print_char(char c);
 
+/* Print only one character on stderr */
 void printError_char(char c);
 
+/* Prints a string with count length on stdout */
+void print_N(const char * src, uint64_t length);
+
+/* Prints a string with count length on stderr */
+void printError_N(const char * str, uint64_t length);
+
+/* Prints on stdout a formatted string */
+void print(char * str, ...);
+
+/* Prints an integer */
 void printInteger(uint64_t dec);
 
+/* Prints on stderr a string like printf */
 void printError(char * str, ...);
 
-void move_line_up(unsigned int line);
-
-void clear_line(unsigned int line);
-
+/* Moves all lines one up */
 void move_all_up();
 
+/* Deletes a line */
+void clear_line(uint64_t line);
+
+/* Clears screen */
 void clear_console();
 
+/* Gets max characters per line */
+int get_max_line()
 
-#endif /* CONSOLE_H_ */
+#endif /* _CONSOLE_H_ */
