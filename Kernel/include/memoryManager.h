@@ -12,10 +12,10 @@ void create_manager(uint8_t * address, uint64_t totalBytes);
 void * malloc(uint64_t bytes);
 
 /* Frees space on memory */
-void free(void * ptr);
+void free(void * pmmtr);
 
 /* Gets memory status */
-void status(uint64_t * total, uint64_t * occupied, uint64_t * free);
+void mm_status(uint64_t * total, uint64_t * occupied, uint64_t * free);
 
 /* Prints memory status */
 void mm_print_status();

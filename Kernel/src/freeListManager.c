@@ -126,7 +126,7 @@ void free(void * ptr) {
 }
 
 /* Gets memory status */
-void status(uint64_t * total, uint64_t * occupied, uint64_t * free) {
+void mm_status(uint64_t * total, uint64_t * occupied, uint64_t * free) {
     *total = (memory.freeBlocks + memory.usedBlocks) * memory.blockSize;
     *occupied = memory.usedBlocks * memory.blockSize;
     *free = memory.freeBlocks * memory.blockSize;
