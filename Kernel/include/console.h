@@ -32,6 +32,9 @@ void print(char * str, ...);
 /* Prints an integer */
 void printInteger(uint64_t dec);
 
+/* Prints a value in hexadecimal */
+void printHex(uint64_t value);
+
 /* Prints on stderr a string like printf */
 void printError(char * str, ...);
 
@@ -46,5 +49,8 @@ void clear_console();
 
 /* Gets max characters per line */
 int get_max_line();
+
+/* Converts a decimal number to a given base */
+uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
 #endif /* _CONSOLE_H_ */

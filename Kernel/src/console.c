@@ -179,6 +179,13 @@ void printInteger(uint64_t dec){
     print("%d", dec);
 }
 
+/* Prints a value in hexadecimal */
+void printHex(uint64_t value) {
+    char buffer[MAX_BUFFER];
+    uintToBase(value, buffer, 16);
+    print(buffer);
+}
+
 /* Prints on stderr a string like printf */
 void printError(char * str, ...) {
     va_list list;
@@ -217,4 +224,34 @@ void clear_console() {
 /* Gets max characters per line */
 int get_max_line() {
     return get_res_y() / CHAR_HEIGHT;
+}
+
+/* Converts a decimal number to a given base */
+uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base) {
+	char *p = buffer;
+	char *p1, *p2;
+	uint32_t digits = 0;
+
+	/* Calculate characters for each digit */
+	do {
+		uint32_t remainder = value % base;
+		*p++ = (remainder < 10) ? remainder + '0' : remainder + 'A' - 10;
+		digits++;
+	} while (value /= base);
+
+	/* Terminate string in buffer */
+	*p = 0;
+
+	/* Reverse string in buffer */
+	p1 = buffer;
+	p2 = p - 1;
+	while (p1 < p2) {
+		char tmp = *p1;
+		*p1 = *p2;
+		*p2 = tmp;
+		p1++;
+		p2--;
+	}
+
+	return digits;
 }

@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 /* Memory Manager builder */
-void create_manager(uint8_t * address, uint64_t pageSize, uint64_t maxPages);
+void create_manager(uint8_t * address, uint64_t blockSize, uint64_t totalBytes);
 
 /* Memory Manager user functions */
 
