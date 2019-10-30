@@ -103,11 +103,11 @@ void free(void * ptr) {
     
     /* Search for the pointer */
     node * iterator = memory.usedList;
-    while (iterator != 0 && iterator->n.address < ptr)
+    while (iterator != 0 && iterator->n.address < (uint8_t *) ptr)
         iterator = iterator->n.next;
         
     /* If not found */
-    if (iterator == 0 || iterator->n.address > ptr) return;
+    if (iterator == 0 || iterator->n.address > (uint8_t *) ptr) return;
 
     node * found = iterator;
 
@@ -231,12 +231,12 @@ static void subdivide_node(node * n, uint64_t size) {
     newNode.n.next = n->n.next;
     newNode.n.prev = n;
     newNode.n.address = n->n.address + size * memory.blockSize;
-    if (newNode.n.next != 0) newNode.n.next->n.prev = newNode.n.address;
+    if (newNode.n.next != 0) newNode.n.next->n.prev = (node *) newNode.n.address;
     memcpy(newNode.n.address, &newNode, sizeof(node));
 
     /* Updates the node given */
     n->n.size = size;
-    n->n.next = newNode.n.address;
+    n->n.next = (node *) newNode.n.address;
 } 
 
 /* Merges the block with the next one (if free) */
