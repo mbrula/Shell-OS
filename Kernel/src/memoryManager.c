@@ -298,20 +298,20 @@ typedef struct mem_header {
     uint64_t blockSize;
 
     /* Block size in level (exp 2) */
-    uint64_t maxLevel;
-    uint64_t minLevel;
+    uint8_t maxLevel;
+    uint8_t minLevel;
 } header;
 
 /* Header of the memory manager */
 static header memory;
 
-/* Memory Manager builder */
+/* Memory Manager builder (totalbytes is assumed to be exp 2) */
 void create_manager(uint8_t * address, uint64_t totalBytes) {    
     /* Initialize list header */
+    memory.root = (node *) address;
     memory.blockSize = sizeof(node) * 2;
     memory.freeBlocks = totalBytes / memory.blockSize;
     memory.usedBlocks = 0;
-    memory.root = (node *) address;
     memory.maxLevel = exp2(totalBytes);
     memory.minLevel = exp2(memory.blockSize);
 
@@ -323,6 +323,19 @@ void create_manager(uint8_t * address, uint64_t totalBytes) {
     first.n.address = address;
     first.n.level = memory.maxLevel;
     memcpy(address, &first, sizeof(node));
+}
+
+/* Reserves bytes space on memory */
+void * malloc(uint64_t bytes) {
+    /* Quantity of the required blocks */
+    uint64_t requiredBlocks = (bytes + sizeof(node) - 1) / memory.blockSize + 1;
+    
+    /* No available space */
+    if (requiredBlocks > memory.freeBlocks) return 0;
+
+    uint8_t requiredLevel = (uint8_t) max(exp2(requiredBlocks), memory.minLevel);
+
+    
 }
 
 #endif
