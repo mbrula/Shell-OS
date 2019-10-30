@@ -16,15 +16,16 @@
 #define MALLOC_ID   9
 #define FREE_ID     10
 #define STATUS_ID   11
+#define GET_STATUS_ID   12
 
-#define NEW_PROC_ID     12
-#define KILL_ID         13
-#define PID_ID          14
-#define PS_ID           15
-#define SET_PRIO_ID     16
-#define SET_STATE_ID    17
+#define NEW_PROC_ID     13
+#define KILL_ID         14
+#define PID_ID          15
+#define PS_ID           16
+#define SET_PRIO_ID     17
+#define SET_STATE_ID    18
 
-#define HALT_ID     18
+#define HALT_ID     19
 
 #define MAX_BUFFER 100
 
@@ -267,6 +268,11 @@ void memStatus() {
 /* Print memory size, occupied memory and free memory (outFd) */
 void memStatusFd(uint64_t outFd) {
     syscall(STATUS_ID, outFd, 0, 0, 0, 0, 0);
+}
+
+/* Print memory size, occupied memory and free memory (outFd) */
+void memGetStatus(uint64_t * total, uint64_t * free, uint64_t * occupied) {
+    syscall(GET_STATUS_ID, (uint64_t)total, (uint64_t)free, (uint64_t)occupied, 0, 0, 0);
 }
 
 /* Create a new process based on an entryPoint */
