@@ -77,40 +77,6 @@ void * initializeKernelBinary() {
 }
 
 int main() {
-    // goToUserland();
-	mm_print_state();
-	void * aux1 = malloc(0x20);
-	mm_print_state();
-	void * aux2 = malloc(0x400);
-	mm_print_state();
-	void * aux3 = malloc(0x1000);
-	mm_print_state();
-	void * aux4 = malloc(0x4000);
-	mm_print_state();
-	void * aux5 = malloc(0x2000);
-	mm_print_state();
-	void * aux6 = malloc(0xF);
-	mm_print_state();
-
-	free(aux6);
-	mm_print_state();
-	aux6 = malloc(0xFFF);
-	mm_print_state();
-	free(aux1);
-	mm_print_state();
-	free(aux3);
-	mm_print_state();
-	free(0);
-	mm_print_state();
-	free(aux5);
-	mm_print_state();
-	free(aux2);
-	mm_print_state();
-	aux2 = malloc(0x3455);
-	mm_print_state();
-	aux6 = malloc(0xFFF);
-	mm_print_state();
-
-
+    goToUserland(); 
 	return 0;
 }

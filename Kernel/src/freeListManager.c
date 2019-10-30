@@ -159,10 +159,13 @@ static void print_list_state(node * iterator) {
         printHex((uint64_t)iterator->n.address);
         print(" to 0x");
         printHex((uint64_t)get_last_address(iterator->n.address + sizeof(node)));
+        
+        /* This prints are for testing porpuse 
         print(" - Previous: 0x");
         printHex((uint64_t)iterator->n.prev);
         print(" - Next: 0x");
-        printHex((uint64_t)iterator->n.next);
+        printHex((uint64_t)iterator->n.next); */
+        
         print("\n");
         iterator = iterator->n.next;
     }
