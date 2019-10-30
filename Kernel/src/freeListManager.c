@@ -27,87 +27,70 @@ typedef struct mem_header {
     node * usedList;
  
     /* Measured in blocks */
-    uint64_t occupied;
-    uint64_t free;
+    uint64_t usedBlocks;
+    uint64_t freeBlocks;
 
     /* Block size in bytes */
     uint64_t blockSize;
 } header;
 
-/* Static function to help merging */
-static void merge_next(node * block);
+/* Statics functions */
+static void extract_node(node * n, node ** list);
+static void insert_node(node * n, node ** list);
+static void subdivide_node(node * n, uint64_t size);
+static void merge_node(node * n);
 
 /* Header of the memory manager */
 static header memory;
 
 /* Memory Manager builder */
-void create_manager(uint8_t * address, uint64_t blockSize, uint64_t totalBytes) {    
+void create_manager(uint8_t * address, uint64_t totalBytes) {    
     /* Initialize list header */
-    memory.free = totalBytes / (blockSize + sizeof(node));
-    memory.occupied = 0;
+    memory.blockSize = sizeof(node) * 2;
+    memory.freeBlocks = totalBytes / memory.blockSize;
+    memory.usedBlocks = 0;
     memory.freeList = (node *) address;
     memory.usedList = 0;
-    memory.blockSize = blockSize;
 
-    /* Create first block of maxPages pages */
+    /* Create first block of totalBytes bytes */
     node first;
     first.n.next = 0;
     first.n.prev = 0;
     first.n.address = address;
-    first.n.size = totalBytes / blockSize;
-
+    first.n.size = memory.freeBlocks;
     memcpy(address, &first, sizeof(node));
 }
 
 /* Reserves bytes space on memory */
 void * malloc(uint64_t bytes) {
     /* Quantity of the required blocks */
-    uint64_t pageCount = (bytes + sizeof(node)) / memory.blockSize + 1;
+    uint64_t requiredBlocks = (bytes + sizeof(node) - 1) / memory.blockSize + 1;
     
     /* No available space */
-    if (pageCount > memory.free) return 0;
+    if (requiredBlocks > memory.freeBlocks) return 0;
 
     /* Search for node with enough space */
-    node * found = memory.freeList;
-    while (found != 0 && found->n.size < pageCount) {
-        found = found->n.next;
-    }
-    /* Not enough space */
-    if (found == 0) return 0;
+    node * iterator = memory.freeList;
+    while (iterator != 0 && iterator->n.size < requiredBlocks)
+        iterator = iterator->n.next;
+    
+    /* Not enough consecutive blocks */
+    if (iterator == 0) return 0;
 
-    /* If we have more space than required */
-    if (found->n.size > pageCount) {
-        /* Create new node pointing to start of the next block, 
-        ** and conect we connect it */
-        node newNode;
-        newNode.n.prev = found->n.prev;
-        newNode.n.next = found->n.next;
-        newNode.n.address = found->n.address + pageCount * memory.blockSize;
-        newNode.n.size = found->n.size - pageCount;
-        memcpy(newNode.n.address, &newNode, sizeof(node));
-        if (found->n.prev == 0)
-            memory.freeList = (node *) newNode.n.address;
-        else
-            found->n.prev->n.next = (node *) newNode.n.address;
-    } else {
-        if (found->n.prev == 0)
-            memory.freeList = found->n.next;
-        else
-            found->n.prev->n.next = found->n.next;
-    }
+    node * found = iterator;
 
-    /* Update properties of the extrcted node and add to usedList */
-    found->n.size = pageCount;
-    found->n.prev = 0;
-    found->n.next = memory.usedList;
-    memory.usedList = found;
+    /* Subdivide node if needed */
+    subdivide_node(found, requiredBlocks);
+    
+    /* Update free list (extract found node from it) */
+    extract_node(found, &memory.freeList);
+
+    /* Update used list (insert found node on it) */
+    insert_node(found, &memory.usedList);
     
     /* Update memory data */
-    memory.occupied += pageCount;
-    memory.free -= pageCount;
-
-    // print("\tDirec Mal: 0x");
-    // printHex((uint64_t) found->n.address);
+    memory.usedBlocks += requiredBlocks;
+    memory.freeBlocks -= requiredBlocks;
 
     /* Returns extracted node */
     return (void *) (found->n.address + sizeof(node));
@@ -115,123 +98,149 @@ void * malloc(uint64_t bytes) {
 
 /* Frees space on memory */
 void free(void * ptr) {
-    /* SEARCH of the ptr on used list */
     /* Creates a pointer to the real start of the block */
-    uint8_t * pointer = (uint8_t *)ptr - sizeof(node);
-
-    // print("\tDirec Free: 0x");
-    // printHex((uint64_t) pointer);
-
-    node * iterator = memory.usedList;
-    node * prev = iterator;
+    ptr = (uint8_t *)ptr - sizeof(node);
     
     /* Search for the pointer */
-    while (iterator != 0 && iterator->n.address != pointer) {
-        prev = iterator;
+    node * iterator = memory.usedList;
+    while (iterator != 0 && iterator->n.address < ptr)
         iterator = iterator->n.next;
-    }
         
     /* If not found */
-    if (iterator == 0) return;
-    node * blockToFree = iterator;
+    if (iterator == 0 || iterator->n.address > ptr) return;
 
-    /* Updates used list */
-    if (memory.usedList == blockToFree) memory.usedList = blockToFree->n.next;
-    else prev->n.next = blockToFree->n.next;
+    node * found = iterator;
 
-    /* SEARCH found block on free list */
-    iterator = memory.freeList;
-    prev = iterator;
+    /* Updates used list (extract found node from it) */
+    extract_node(found, &memory.usedList);
 
-    /* Searches the correct position to insert */
-    while (iterator != 0 && iterator->n.address < blockToFree->n.address) {
-        prev = iterator;
-        iterator = iterator->n.next;
-    }
-    
-    /* Inserts between node prev and iterator */
-    /* First place */
-    if (prev == iterator) {
-        memory.freeList = blockToFree;
-        blockToFree->n.prev = 0;
-        blockToFree->n.next = iterator;
-    } else {
-        blockToFree->n.prev = prev;
-        blockToFree->n.next = prev->n.next;
-        prev->n.next = blockToFree;
-        if (iterator != 0) iterator->n.prev = blockToFree;
-    } 
+    /* Update free list (insert found node on it) */
+    insert_node(found, &memory.freeList);
+
+    /* Merges node on free list if needed */
+    merge_node(found);
 
     /* Updates header values */
-    memory.occupied -= blockToFree->n.size;
-    memory.free += blockToFree->n.size;
-
-    /* Checks for a next contiguous free block and merges it */
-    merge_next(blockToFree);
-    if (blockToFree->n.prev != 0) merge_next(blockToFree->n.prev);
+    memory.usedBlocks -= found->n.size;
+    memory.freeBlocks += found->n.size;
 }
 
 /* Gets memory status */
 void status(uint64_t * total, uint64_t * occupied, uint64_t * free) {
-    *total = (memory.free + memory.occupied) * memory.blockSize;
-    *occupied = memory.occupied * memory.blockSize;
-    *free = memory.free * memory.blockSize;
+    *total = (memory.freeBlocks + memory.usedBlocks) * memory.blockSize;
+    *occupied = memory.usedBlocks * memory.blockSize;
+    *free = memory.freeBlocks * memory.blockSize;
 }
 
 /* Prints memory status */
-void printStatus() {
-    uint64_t occupied = memory.occupied * memory.blockSize;
-    uint64_t freed = memory.free * memory.blockSize;
+void mm_print_status() {
+    uint64_t occupied = memory.usedBlocks * memory.blockSize;
+    uint64_t freed = memory.freeBlocks * memory.blockSize;
     uint64_t total = occupied + freed;
 
     print("\n----- Estado de la memoria -----");
     print("\nTotal Size: %d\nOcuppied Size: %d\nFree Size: %d", total, occupied, freed);
 }
 
-/* Merges the block with the next one (if free) */
-static void merge_next(node * block) {
-    node * nextBlock = block->n.next;
-    if (nextBlock != 0 && block->n.address + block->n.size * memory.blockSize == nextBlock->n.address) {
-        block->n.size += nextBlock->n.size;
-        block->n.next = nextBlock->n.next;
-    }
-}
-
 /* Returns the first address from the next block, 
 ** assuming ptr is a valid return from malloc */
-void * getLastAddress (void * ptr) {
+void * get_last_address (void * ptr) {
     node * aux = (node *) ((uint8_t *) ptr - sizeof(node));
-    return aux->n.address + aux->n.size * memory.blockSize;
+    return (void *)(aux->n.address + aux->n.size * memory.blockSize);
+}
+
+/* Prints state of the given node list */
+static void print_list_state(node * iterator) {
+    while (iterator != 0) {
+        print("- Size: %d", iterator->n.size);
+        print("- Address: 0x");
+        printHex((uint64_t)iterator->n.address);
+        print("\t to Last: 0x");
+        printHex((uint64_t)get_last_address(iterator->n.address + sizeof(node)));
+        print("\n");
+        iterator = iterator->n.next;
+    }
+    print("\n---------------\n: ");
 }
 
 /* Prints memory state */
-void printMemState() {
-    // node * freed = memory.freeList;
-    // print("\nLista de frees: \n");
-    // while (freed != 0) {
-    //     print("- Size: %d", freed->n.size);
-    //     print("- Address: 0x");
-    //     printHex((uint64_t)freed->n.address);
-    //     print("\t to Last: 0x");
-    //     printHex((uint64_t)getLastAddress(freed->n.address + sizeof(node)));
-    //     print("\n");
-    //     freed = freed->n.next;
-    // }
-    // print("\n---------------\n: ");
+void mm_print_state() {
+    print("\nFree list: \n");
+    print_list_state(memory.freeList);
+    print("\nUsed list: \n");
+    print_list_state(memory.usedList);
+}
 
-    // node * used = memory.usedList;
-    // print("\nLista de used: \n");
-    // while (used != 0) {
-    //     print("- Size: %d", used->n.size);
-    //     print("- Address: 0x");
-    //     printHex((uint64_t)used->n.address);
-    //     print("\n");
-    //     used = used->n.next;
-    // }
-    // print("\n---------------\n: ");
-    print("\n----- Memory Manager -----\n");
-    print("Node size: 0x");
-    printHex(sizeof(node));
-    print("\nFree memory blocks: 0x");
-    printHex(memory.free);
+/* Extracts de given node from the given double linked list */
+static void extract_node(node * n, node ** list) {
+    /* First node */
+    if (n->n.prev == 0) {
+        *list = n->n.next;
+        if (*list != 0) (*list)->n.prev = 0;
+        return;
+    }
+
+    /* Middle or last node */
+    n->n.prev->n.next = n->n.next;
+    if (n->n.next != 0) n->n.next->n.prev = n->n.prev;
+}
+
+/* Inserts the given node (ordered by address) onto the given double linked list */
+static void insert_node(node * n, node ** list) {
+    /* Search the corect position to insert given node */
+    node * iterator = *list;
+    node * prev;
+    while (iterator != 0 && iterator->n.address < n->n.address) {
+        prev = iterator;
+        iterator = iterator->n.next;
+    }
+    
+    /* First (could be only one) */
+    if (iterator == *list) {
+        n->n.next = *list;
+        n->n.prev = 0;
+        *list = n;
+        if (n->n.next != 0) n->n.next->n.prev = n;
+        return;
+    }
+
+    /* Middle or last (insert between prev and iterator) */
+    n->n.prev = prev;
+    n->n.next = iterator;
+    prev->n.next = n;
+    if (iterator != 0) iterator->n.prev = n;
+}
+
+/* Subdivides node n in two bocks, one with size, and the other with remaining data */
+static void subdivide_node(node * n, uint64_t size) {
+    if (n->n.size == size) return;
+    
+    /* Creates a new node next to node given */
+    node newNode;
+    newNode.n.size = n->n.size - size;
+    newNode.n.next = n->n.next;
+    newNode.n.prev = n;
+    newNode.n.address = n->n.address + size * memory.blockSize;
+    memcpy(newNode.n.address, &newNode, sizeof(node));
+
+    /* Updates the node given */
+    n->n.size = size;
+    n->n.next = newNode.n.address;
+} 
+
+/* Merges the block with the next one (if free) */
+static void merge_next(node * n) {
+    node * nextBlock = n->n.next;
+    if (nextBlock == 0 || n->n.address + n->n.size * memory.blockSize != nextBlock->n.address)
+        return;
+
+    n->n.size += nextBlock->n.size;
+    n->n.next = nextBlock->n.next;
+    if (n->n.next != 0) n->n.next->n.prev = n;        
+}
+
+/* Merges the block with the next one and / or previous one (if free) */
+static void merge_node(node * n) {
+    merge_next(n);
+    if (n->n.prev != 0) merge_next(n->n.prev);
 }

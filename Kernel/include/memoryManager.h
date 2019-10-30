@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 /* Memory Manager builder */
-void create_manager(uint8_t * address, uint64_t blockSize, uint64_t totalBytes);
+void create_manager(uint8_t * address, uint64_t totalBytes);
 
 /* Memory Manager user functions */
 
@@ -18,13 +18,13 @@ void free(void * ptr);
 void status(uint64_t * total, uint64_t * occupied, uint64_t * free);
 
 /* Prints memory status */
-void printStatus();
+void mm_print_status();
 
 /* Returns the first address from the next block, 
 ** assuming ptr is a valid return from malloc */
-void * getLastAddress(void * ptr);
+void * get_last_address(void * ptr);
 
 /* Prints memory state */
-void printMemState();
+void mm_print_state();
 
 #endif /* _MEM_MANAGER_H_ */

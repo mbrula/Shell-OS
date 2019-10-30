@@ -19,8 +19,6 @@ extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
 
 static const uint64_t PageSize = 0x1000;
-/* Size of the blockds 16B */
-static const uint64_t blockSize = 0xF;
 /* Total amount of memory 512MB */
 static const uint64_t totalBytes = 0x20000000;
 
@@ -68,7 +66,7 @@ void * initializeKernelBinary() {
 	void * startOfMem = (void *)(((uint8_t *) endOfModules + PageSize - (uint64_t) endOfModules % PageSize));
 
 	/* Creates memory manager at the end of the modules loaded */
-	create_manager(startOfMem, blockSize, totalBytes);
+	create_manager(startOfMem, totalBytes);
 
 	init_video_driver();
   	init_console();
@@ -80,6 +78,6 @@ void * initializeKernelBinary() {
 
 int main() {
     // goToUserland();
-	printMemState();
+	mm_print_state();
 	return 0;
 }
