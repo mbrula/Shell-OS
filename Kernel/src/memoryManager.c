@@ -6,6 +6,11 @@
 
 #include <memoryManager.h>
 
+#ifndef BUDDY
+/*********************************************
+**  Start of the Free List Memory Manager   **
+**********************************************/
+
 typedef union mem_node {
     struct {
         /* Pointers to the next and previous memory block nodes */
@@ -255,3 +260,13 @@ static void merge_node(node * n) {
     merge_next(n);
     if (n->n.prev != 0) merge_next(n->n.prev);
 }
+
+#else
+/*****************************************
+**  Start of the Buddy Memory Manager   **
+******************************************/
+
+
+
+
+#endif
