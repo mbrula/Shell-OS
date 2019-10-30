@@ -117,12 +117,12 @@ void free(void * ptr) {
     /* Update free list (insert found node on it) */
     insert_node(found, &memory.freeList);
 
-    /* Merges node on free list if needed */
-    merge_node(found);
-
     /* Updates header values */
     memory.usedBlocks -= found->n.size;
     memory.freeBlocks += found->n.size;
+
+    /* Merges node on free list if needed */
+    merge_node(found);
 }
 
 /* Gets memory status */
