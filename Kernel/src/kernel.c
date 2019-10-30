@@ -1,15 +1,14 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <stdint.h>
-#include <strings.h>
 #include <lib.h>
 #include <moduleLoader.h>
-#include <naiveConsole.h>
+#include <moduleAddresses.h>
 #include <idtLoader.h>
 #include <defs.h>
 #include <videoDriver.h>
 #include <console.h>
-#include <moduleAddresses.h>
+#include <memoryManager.h>
 //#include <timelib.h>
 
 extern uint8_t text;
@@ -20,6 +19,8 @@ extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
 
 static const uint64_t PageSize = 0x1000;
+/* Total amount of memory 512MB */
+static const uint64_t totalBytes = 0x20000000;
 
 
 typedef int (*EntryPoint)();
@@ -59,9 +60,13 @@ void * initializeKernelBinary() {
 		phyloModuleAddress
 	};
 
-	loadModules(&endOfKernelBinary, moduleAddresses);
-
+	/* Gets modules final address */
+	void * endOfModules = loadModules(&endOfKernelBinary, moduleAddresses);
 	clearBSS(&bss, &endOfKernel - &bss);
+	void * startOfMem = (void *)(((uint8_t *) endOfModules + PageSize - (uint64_t) endOfModules % PageSize));
+
+	/* Creates memory manager at the end of the modules loaded */
+	create_manager(startOfMem, totalBytes);
 
 	init_video_driver();
   	init_console();
@@ -72,6 +77,6 @@ void * initializeKernelBinary() {
 }
 
 int main() {
-    goToUserland();
+    goToUserland(); 
 	return 0;
 }

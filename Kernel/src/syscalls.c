@@ -6,6 +6,7 @@
 #include <console.h>
 #include <naiveConsole.h>
 #include <sound.h>
+#include <memoryManager.h>
 
 /* Located on loader.asm */
 extern void hang();
@@ -38,7 +39,6 @@ uint64_t time_handler() {
 
 void clear_handler() {
     clear_console();
-	// ncClear();
 }
 
 uint64_t rtc_handler(uint8_t reg){
@@ -66,3 +66,23 @@ void pixel_handler(uint64_t x, uint64_t y, uint64_t rgb) {
     Color auxColor = {(rgb & 0xFF0000) >> 16, (rgb & 0x00FF00) >> 8, rgb & 0x0000FF};
     draw_pixel(auxPos, auxColor);
 }
+
+/* ---------------------------- */
+
+void * malloc_handler(uint64_t bytes) {
+    return malloc(bytes);
+}
+
+void free_handler(void * ptr) {
+    free(ptr);
+}
+
+void mm_print_status_handler() {
+    mm_print_status();
+}
+
+void mm_get_status_handler(uint64_t * total, uint64_t * occupied, uint64_t * free) {
+    mm_status(total, occupied, free);
+}
+
+/* ----------------------------- */

@@ -17,5 +17,9 @@ void beep_handler(uint16_t frequency, uint64_t time);
 void exit_handler();
 void pixel_handler(uint64_t x, uint64_t y, uint64_t rgb);
 
+void * malloc_handler(uint64_t bytes);
+void free_handler(void * ptr);
+void mm_print_status_handler();
+void mm_get_status_handler(uint64_t * total, uint64_t * occupied, uint64_t * free);
 
 #endif /* _SYSCALLS_H_ */

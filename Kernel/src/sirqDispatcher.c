@@ -3,7 +3,7 @@
 #include <syscalls.h>
 #include <stdint.h>
 
-#define SYSCALL_COUNT	18
+#define SYSCALL_COUNT	19
 
 /* Software handlers functions */
 static uint64_t syscall_00 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
@@ -19,21 +19,22 @@ static uint64_t syscall_08 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t r
 static uint64_t syscall_09 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 static uint64_t syscall_10 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 static uint64_t syscall_11 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
-
 static uint64_t syscall_12 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+
 static uint64_t syscall_13 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 static uint64_t syscall_14 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 static uint64_t syscall_15 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 static uint64_t syscall_16 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 static uint64_t syscall_17 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 static uint64_t syscall_18 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+static uint64_t syscall_19 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
 uint64_t (* syscalls[]) (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) = 
 																{syscall_00, syscall_01, syscall_02, syscall_03, 
 																	syscall_04, syscall_05, syscall_06, syscall_07,
 																	syscall_08,	syscall_09, syscall_10, syscall_11,
 																	syscall_12, syscall_13, syscall_14, syscall_15,
-																	syscall_16, syscall_17, syscall_18};
+																	syscall_16, syscall_17, syscall_18, syscall_19};
 
 /* Dispatcher for software interrupts */
 uint64_t handleSyscall(uint64_t sirq, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
@@ -88,49 +89,53 @@ uint64_t syscall_08 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 
 /* -----------------------------------------------------------------*/
 uint64_t syscall_09 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-	// return (uint64_t) malloc_handler(rdi);
+	return (uint64_t) malloc_handler(rdi);
 }
 
 uint64_t syscall_10 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-	// free_handler((void *) rdi);
+	free_handler((void *) rdi);
 	return 0;
 }
 
 uint64_t syscall_11 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-	// printStatus_handler();
+	mm_print_status_handler();
 	return 0;
+}
+
+uint64_t syscall_12 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+	mm_get_status_handler((uint64_t *)rdi, (uint64_t *)rsi, (uint64_t *)rdx);
 }
 
 /* -----------------------------------------------------------------*/
 //syscall(NEW_PROC_ID, (uint64_t) name, argc, (uint64_t) argv, ground, inFd, outFd)
-uint64_t syscall_12 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t syscall_13 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
 	// return create_handler((char *)rdi, rsi, (char **) rdx, rcx, r8, r9);
 }
 
-uint64_t syscall_13 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t syscall_14(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
 	// return kill_handler(rdi);
 }
 
-uint64_t syscall_14 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t syscall_15 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
 	// return getPid_handler();
 }
 
-uint64_t syscall_15 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t syscall_16 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
 	// listAllProcess_handler();
 	return 0;
 }
 
 // rdi = PID ; rsi = PRIORITY
-uint64_t syscall_16 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t syscall_17 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
 	// return setPriority_handler(rdi, rsi);
 }
 
 // rdi = PID
-uint64_t syscall_17 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t syscall_18 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
 	// return changeState_handler(rdi);
 }
 
-uint64_t syscall_18 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
+uint64_t syscall_19 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
 	// halt_handler();
 	// return 0;
 }

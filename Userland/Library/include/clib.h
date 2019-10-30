@@ -52,6 +52,7 @@ void * malloc(uint32_t size);
 void free(void * ptr);
 void memStatus();
 void memStatusFd(uint64_t outFd);
+void memGetStatus(uint64_t * total, uint64_t * free, uint64_t * occupied);
 
 /* Processes functions */
 uint64_t fork(void * entryPoint, char * name);
