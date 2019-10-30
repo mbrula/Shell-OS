@@ -57,13 +57,8 @@ uint64_t pow(int base, int exponent) {
 
 /* Converts a number to base 2, returns exponent */
 uint64_t exp2(uint64_t number) {
-	uint64_t exp = 1;
-	float aux = (float)number;
-	while (aux > 2) {
-		aux /= 2;
-		exp++;
-	}
-	return exp;
+	if (number <= 1) return 1;
+	return 64 - __builtin_clzll(number - 1);
 }
 
 /* Returns max given two values */

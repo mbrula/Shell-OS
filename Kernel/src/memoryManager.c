@@ -266,7 +266,63 @@ static void merge_node(node * n) {
 **  Start of the Buddy Memory Manager   **
 ******************************************/
 
+/* Posibles states of a node */
+typedef enum {FREE = 0, USED, PUSED} nodeState;
 
+typedef union mem_tree_node {
+    struct {
+        /* Pointers left and right nodes */
+        union mem_tree_node * left;
+        union mem_tree_node * right;
 
+        /* State of the current node */
+        nodeState state;
+
+        /* Pointer to start of the block (node) */
+        uint8_t * address;
+
+        /* Level, exponent of base 2 */
+        uint64_t level;   
+    } n;
+    long x;
+} node;
+
+typedef struct mem_header {
+    node * root;
+ 
+    /* Measured in blocks */
+    uint64_t usedBlocks;
+    uint64_t freeBlocks;
+
+    /* Block size in bytes */
+    uint64_t blockSize;
+
+    /* Block size in level (exp 2) */
+    uint64_t maxLevel;
+    uint64_t minLevel;
+} header;
+
+/* Header of the memory manager */
+static header memory;
+
+/* Memory Manager builder */
+void create_manager(uint8_t * address, uint64_t totalBytes) {    
+    /* Initialize list header */
+    memory.blockSize = sizeof(node) * 2;
+    memory.freeBlocks = totalBytes / memory.blockSize;
+    memory.usedBlocks = 0;
+    memory.root = (node *) address;
+    memory.maxLevel = exp2(totalBytes);
+    memory.minLevel = exp2(memory.blockSize);
+
+    /* Create first block of totalBytes bytes */
+    node first;
+    first.n.left = 0;
+    first.n.right = 0;
+    first.n.state = FREE;
+    first.n.address = address;
+    first.n.level = memory.maxLevel;
+    memcpy(address, &first, sizeof(node));
+}
 
 #endif
