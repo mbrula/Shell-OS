@@ -104,6 +104,13 @@ int main() {
 	mm_print_state();
 	free(aux5);
 	mm_print_state();
+	free(aux2);
+	mm_print_state();
+	aux2 = malloc(0x3455);
+	mm_print_state();
+	aux6 = malloc(0xFFF);
+	mm_print_state();
+
 
 	return 0;
 }

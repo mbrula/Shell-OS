@@ -228,6 +228,7 @@ static void subdivide_node(node * n, uint64_t size) {
     newNode.n.next = n->n.next;
     newNode.n.prev = n;
     newNode.n.address = n->n.address + size * memory.blockSize;
+    if (newNode.n.next != 0) newNode.n.next->n.prev = newNode.n.address;
     memcpy(newNode.n.address, &newNode, sizeof(node));
 
     /* Updates the node given */
