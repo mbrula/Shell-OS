@@ -81,7 +81,7 @@ void mm_print_status_handler() {
     mm_print_status();
 }
 
-void mm_print_status_handler(uint64_t * total, uint64_t * occupied, uint64_t * free) {
+void mm_get_status_handler(uint64_t * total, uint64_t * occupied, uint64_t * free) {
     mm_status(total, occupied, free);
 }
 

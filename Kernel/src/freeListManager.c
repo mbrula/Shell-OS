@@ -151,23 +151,30 @@ void * get_last_address (void * ptr) {
 
 /* Prints state of the given node list */
 static void print_list_state(node * iterator) {
+    if (iterator == 0) print("\n");
     while (iterator != 0) {
-        print("- Size: %d", iterator->n.size);
-        print("- Address: 0x");
+        print(" Blocks: %d (of %d bytes)", iterator->n.size, memory.blockSize);
+        print(" - Address: 0x");
         printHex((uint64_t)iterator->n.address);
-        print("\t to Last: 0x");
+        print(" to: 0x");
         printHex((uint64_t)get_last_address(iterator->n.address + sizeof(node)));
+
+        print(" - Previous: 0x");
+        printHex((uint64_t)iterator->n.prev);
+        print(" - Next: 0x");
+        printHex((uint64_t)iterator->n.next);
+
         print("\n");
         iterator = iterator->n.next;
     }
-    print("\n---------------\n: ");
+    print("\t\t\t\t\t----- End of list -----\n");
 }
 
 /* Prints memory state */
 void mm_print_state() {
-    print("\nFree list: \n");
+    print("\n\t\t\t\t\t----- Free list -----\n");
     print_list_state(memory.freeList);
-    print("\nUsed list: \n");
+    print("\n\t\t\t\t\t----- Used list -----\n");
     print_list_state(memory.usedList);
 }
 
