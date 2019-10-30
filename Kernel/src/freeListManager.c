@@ -154,7 +154,7 @@ static void print_list_state(node * iterator) {
     if (iterator == 0) print("\n");
     uint64_t num = 0;
     while (iterator != 0) {
-        print("Num: %d - Blocks: %d", num++, iterator->n.size);
+        print(" Num: %d - Blocks: %d", num++, iterator->n.size);
         print(" - Address: 0x");
         printHex((uint64_t)iterator->n.address);
         print(" to 0x");
@@ -166,14 +166,15 @@ static void print_list_state(node * iterator) {
         print("\n");
         iterator = iterator->n.next;
     }
-    print("----------- End of list\n");
+    print("\n");
 }
 
 /* Prints memory state */
 void mm_print_state() {
-    print("\n----------- Free list:\n");
+    print("\n ----- Memory status -----\n");
+    print("\n - Free list:\n");
     print_list_state(memory.freeList);
-    print("\n----------- Used list:\n");
+    print("\n - Used list:\n");
     print_list_state(memory.usedList);
 }
 
