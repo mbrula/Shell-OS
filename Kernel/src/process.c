@@ -14,7 +14,7 @@ static uint64_t c_pid = 0;
 /* Creates a new process and adds it to scheduler */
 uint64_t add_process(void * entryPoint, char * name, level context, uint64_t argc, char ** argv, int inAlias, int outAlias) {
     process data = create_process(entryPoint, name, context, argc, argv, inAlias, outAlias);
-    
+   
     /* Add process to scheduler */
     // add(data); TODO add to scheduler
     // if (context == FORE && data.pid > 1)
@@ -52,6 +52,8 @@ process create_process(void * entryPoint, char * name, level context, uint64_t a
     data.state = READY;
     data.stack = processStack;
 
+    // print_process_stack(data); for teting purposes
+
     return data;
 }
 
@@ -82,7 +84,7 @@ void sig_int() {
 }
 
 /* Print process stack */
-void print_process_stacak(process p) {
+void print_process_stack(process p) {
     char * lastAddress = (char *) get_last_address(p.stack);
     print("\nProcess %d \n", p.pid);
     uint64_t * aux;

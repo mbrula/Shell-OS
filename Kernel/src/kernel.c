@@ -9,7 +9,10 @@
 #include <videoDriver.h>
 #include <console.h>
 #include <memoryManager.h>
-//#include <timelib.h>
+#include <process.h>
+//  <timelib.h>
+
+// #include <syscalls.h> testing purposes 
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -76,7 +79,9 @@ void * initializeKernelBinary() {
 }
 
 int main() {
-	mm_print_status();
-    // goToUserland();
+	// char * v[] = {"50"};
+	// create_handler("SLEEP", 1, v, FORE, 0, 0);
+	// ((EntryPoint)sleepModuleAddress)();
+    goToUserland();
 	return 0;
 }
