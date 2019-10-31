@@ -15,9 +15,7 @@
         "Userland": true
     },
     "files.associations": {
-        "lib.h": "c",
-        "videodriver.h": "c",
-        "console.h": "c"
+        "process.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

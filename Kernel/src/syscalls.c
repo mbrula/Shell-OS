@@ -7,6 +7,9 @@
 #include <naiveConsole.h>
 #include <sound.h>
 #include <memoryManager.h>
+#include <moduleAddresses.h>
+#include <process.h>
+#include <strings.h>
 
 /* Located on loader.asm */
 extern void hang();
@@ -86,3 +89,28 @@ void mm_get_status_handler(uint64_t * total, uint64_t * occupied, uint64_t * fre
 }
 
 /* ----------------------------- */
+
+static void * get_module_address(char * name) {
+    if (stringcmp(name, "SHELL"))
+        return shellModuleAddress;
+    if (stringcmp(name, "SLEEP"))
+        return sleepModuleAddress;
+    if (stringcmp(name, "LOOP"))
+        return loopModuleAddress;
+    if (stringcmp(name, "CAT"))
+        return catModuleAddress;
+    if (stringcmp(name, "WC"))
+        return wcModuleAddress;
+    if (stringcmp(name, "FILTER"))
+        return filterModuleAddress;
+    if (stringcmp(name, "PHYLO"))
+        return phyloModuleAddress;
+    return 0;
+}
+
+uint64_t create_handler(char * name, uint64_t argc, char ** argv, level context, uint64_t inFd, uint64_t outFd) {
+    void * entryPoint = get_module_address(name);
+    if (entryPoint == 0) return 0;
+    return add_process(entryPoint, name, context, argc, argv, inFd, outFd);
+}
+
