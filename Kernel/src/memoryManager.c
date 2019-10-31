@@ -6,7 +6,7 @@
 
 #include <memoryManager.h>
 
-#ifdef BUDDY
+#ifndef BUDDY
 /*********************************************
 **  Start of the Free List Memory Manager   **
 **********************************************/

@@ -7,6 +7,9 @@ OBJECTS=$(SOURCES:.c=.o)
 OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
 LOADERSRC=loader.asm
 
+# Here put -DBUDDY if you want to use buddy allocation system 
+MM =
+
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
 
@@ -18,7 +21,8 @@ $(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM)
 
 
 %.o: %.c
-	$(GCC) $(GCCFLAGS) -I./include -c $< -o $@
+
+	$(GCC) $(GCCFLAGS) $(MM) -I./include -c $< -o $@
 
 %.o : %.asm
 	$(ASM) $(ASMFLAGS) $< -o $@

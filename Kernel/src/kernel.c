@@ -76,6 +76,7 @@ void * initializeKernelBinary() {
 }
 
 int main() {
-    goToUserland();
+	mm_print_status();
+    // goToUserland();
 	return 0;
 }
