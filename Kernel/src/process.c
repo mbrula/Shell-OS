@@ -41,7 +41,7 @@ process create_process(void * entryPoint, char * name, level context, uint64_t a
     
     /* Creates process data */
     process data;
-    data.name = (char *) malloc(strlen(name) + 1);
+    data.name = (char *) malloc(stringlen(name) + 1);
     stringcp(data.name, name);
     data.pid = c_pid++;
     // data.ppid = getPid(); TODO when scheduler
@@ -75,7 +75,7 @@ void remove(process p) {
     free(p.name);
 }
 
-/* If a valid process, kill */
+/* If a valid process, kill (used when ctrl + C) */
 void sig_int() {
     // if (getPid() > 1) TODO when scheduler
     //     killCurrent();

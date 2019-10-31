@@ -7,7 +7,7 @@
 uint64_t stringlen(char * str);
 
 /* Copies one string onto a destination */
-void strngcp(char * destination, char * origin);
+void stringcp(char * destination, char * origin);
 
 /* Compares two strings */
 uint8_t stringcmp(char * str1, char * str2);

@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <lib.h>
+#include <process.h>
 
 /* Dispatcher for software interrupts */
 uint64_t handleSyscall(uint64_t sirq, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
@@ -21,5 +22,7 @@ void * malloc_handler(uint64_t bytes);
 void free_handler(void * ptr);
 void mm_print_status_handler();
 void mm_get_status_handler(uint64_t * total, uint64_t * occupied, uint64_t * free);
+
+uint64_t create_handler(char * name, uint64_t argc, char ** argv, level context, uint64_t inFd, uint64_t outFd);
 
 #endif /* _SYSCALLS_H_ */
