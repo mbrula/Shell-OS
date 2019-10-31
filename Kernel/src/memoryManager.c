@@ -108,11 +108,11 @@ void free(void * ptr) {
     
     /* Search for the pointer */
     node * iterator = memory.usedList;
-    while (iterator != 0 && iterator->n.address < (uint8_t) ptr)
+    while (iterator != 0 && iterator->n.address < (uint8_t *) ptr)
         iterator = iterator->n.next;
         
     /* If not found */
-    if (iterator == 0 || iterator->n.address > (uint8_t) ptr) return;
+    if (iterator == 0 || iterator->n.address > (uint8_t *) ptr) return;
 
     node * found = iterator;
 
