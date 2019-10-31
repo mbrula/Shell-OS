@@ -6,7 +6,7 @@
 
 #include <memoryManager.h>
 
-#ifndef BUDDY
+#ifdef BUDDY
 /*********************************************
 **  Start of the Free List Memory Manager   **
 **********************************************/
@@ -288,7 +288,10 @@ typedef union mem_tree_node {
 } node;
 
 typedef struct mem_header {
-    node * root;
+    uint8_t * address;
+
+    /* Where the nodes are stored */
+    node * nodeList;
  
     /* Measured in blocks */
     uint64_t usedBlocks;
@@ -302,40 +305,203 @@ typedef struct mem_header {
     uint8_t minLevel;
 } header;
 
+/* Static auxiliary functions */
+static void init_header(uint8_t * address, uint64_t totalBytes);
+static void init_nodes(uint64_t index, uint8_t * address, uint64_t level);
+static void * find_block(node * n, uint64_t level);
+static uint64_t delete_block(node * n, uint8_t * ptr);
+static node * get_node(node * n, uint8_t * ptr);
+static void printNodes(node * list);
+
 /* Header of the memory manager */
 static header memory;
 
 /* Memory Manager builder (totalbytes is assumed to be exp 2) */
 void create_manager(uint8_t * address, uint64_t totalBytes) {    
-    /* Initialize list header */
-    memory.root = (node *) address;
-    memory.blockSize = sizeof(node) * 2;
-    memory.freeBlocks = totalBytes / memory.blockSize;
-    memory.usedBlocks = 0;
-    memory.maxLevel = exp2(totalBytes);
-    memory.minLevel = exp2(memory.blockSize);
-
-    /* Create first block of totalBytes bytes */
-    node first;
-    first.n.left = 0;
-    first.n.right = 0;
-    first.n.state = FREE;
-    first.n.address = address;
-    first.n.level = memory.maxLevel;
-    memcpy(address, &first, sizeof(node));
+    init_header(address, totalBytes);
+    init_nodes(0, memory.address, memory.maxLevel);
 }
 
 /* Reserves bytes space on memory */
 void * malloc(uint64_t bytes) {
-    /* Quantity of the required blocks */
-    uint64_t requiredBlocks = (bytes + sizeof(node) - 1) / memory.blockSize + 1;
-    
-    /* No available space */
-    if (requiredBlocks > memory.freeBlocks) return 0;
+    return find_block(memory.nodeList, max(exp2(bytes), memory.minLevel));   
+}
 
-    uint8_t requiredLevel = (uint8_t) max(exp2(requiredBlocks), memory.minLevel);
+/* Frees space on memory */
+void free(void * ptr) {
+    if (ptr == 0) return;
+    delete_block(memory.nodeList, (uint8_t *) ptr); 
+}
 
+/* Gets memory status */
+void mm_status(uint64_t * total, uint64_t * occupied, uint64_t * free) {
+    *occupied = memory.usedBlocks * memory.blockSize;
+    *free = memory.freeBlocks * memory.blockSize;
+    *total = *occupied + *free;
+}
+
+/* Prints memory status */
+void mm_print_status() {
+    uint64_t occupied = memory.usedBlocks * memory.blockSize;
+    uint64_t freed = memory.freeBlocks * memory.blockSize;
+    uint64_t total = occupied + freed;
+
+    print("\n----- Estado de la memoria -----");
+    print("\nTotal Size: %d\nOcuppied Size: %d\nFree Size: %d", total, occupied, freed);
+}
+
+/* Returns the first address from the next block, 
+** assuming ptr is a valid return from malloc */
+void * get_last_address(void * ptr) {
+    node * n = get_node(memory.nodeList, (uint8_t *) ptr);
+    return n->n.address + pow(2, n->n.level);
+}
+
+/* Prints memory state */
+void mm_print_state() {
+    printNodes(memory.nodeList);
+}
+
+
+/* Initializes al the data for the header (total bytes expected in base 2) */
+static void init_header(uint8_t * address, uint64_t totalBytes) {
+    /* Staring max level, min level and block size */
+    memory.blockSize = sizeof(node);
+    memory.maxLevel = exp2(totalBytes);
+    memory.minLevel = exp2(memory.blockSize);
+
+    /* Initial configuration */
+    uint64_t realBytes = totalBytes;
+    uint64_t nodeSpace = totalBytes - realBytes;
+    uint64_t maxBlocks = pow(2, memory.maxLevel - memory.minLevel + 1) - 1;
+
+    /* Searches for the best configuration posible */
+    while (maxBlocks * sizeof(node) > nodeSpace) {
+        memory.maxLevel -= 1;
+        realBytes /= 2;
+        nodeSpace = totalBytes - realBytes;
+        maxBlocks = pow(2, memory.maxLevel - memory.minLevel + 1) - 1;
+    }
+
+    /*  Finally initializes remaining memory data */
+    memory.address = address + nodeSpace;
+    memory.nodeList = (node *) address; 
+    memory.freeBlocks = pow(2, memory.maxLevel - memory.minLevel);
+    memory.usedBlocks = 0;
+}
+
+/* Initializes vector of nodes */
+static void init_nodes(uint64_t index, uint8_t * address, uint64_t level) {
+    /* Initialize current node */
+    memory.nodeList[index].n.address = address;
+    memory.nodeList[index].n.level = level;
+    memory.nodeList[index].n.state = FREE;
+
+    /* If final level */
+    if (level == memory.minLevel) {
+        memory.nodeList[index].n.left = 0;
+        memory.nodeList[index].n.right = 0;
+        return;
+    }
+
+    memory.nodeList[index].n.left = memory.nodeList + index + 1;
+    memory.nodeList[index].n.right = memory.nodeList + index + pow(2, level - memory.minLevel);
     
+    /* Initialize left and right part of the tree */
+    init_nodes(index + 1, address, level - 1);
+    init_nodes(index + pow(2, level - memory.minLevel), address + pow(2, level - 1), level - 1);
+}
+
+/* Recursive function, creates children if needed, returns node direction */
+static void * find_block(node * n, uint64_t level) {
+    if (n->n.level == level) {
+        if (n->n.state != FREE) return 0;
+        else {
+            n->n.state = USED;
+            uint64_t aux = pow(2, n->n.level - memory.minLevel);
+            memory.freeBlocks -= aux;
+            memory.usedBlocks += aux;
+            return (void *) n->n.address;
+        }
+    }
+    
+    /* It has a superior level but used */
+    if (n->n.state == USED) return 0;
+
+    /* Superior level and free or partially occupied */
+    /* If its FREE we will find place for block, so is PO */
+    n->n.state = PUSED;
+    void * aux = find_block(n->n.left, level);
+    if (aux == 0) aux = find_block(n->n.right, level);   
+
+    /* Updates state of the current node (at this point it was PO) */
+    if (n->n.left->n.state == USED && n->n.right->n.state == USED) n->n.state = USED;
+
+    return aux;
+}
+
+/* Merges childs of the given node */
+static void merge_childs(node * n) {
+    n->n.state = PUSED;
+    /* If childs are both free */
+    if (n->n.left->n.state == FREE && n->n.right->n.state == FREE) n->n.state = FREE;
+}
+
+/* Recursive function to free a block */
+static uint64_t delete_block(node * n, uint8_t * ptr) {
+    /* If smaller addres or the block is free, return */
+    if (n->n.address > ptr || n->n.state == FREE)
+        return 0;
+
+    /* Same address and min level or both childs free, then found */
+    if (n->n.address == ptr && (n->n.level == memory.minLevel || (n->n.left->n.state == FREE && n->n.right->n.state == FREE))) {
+        n->n.state = FREE;
+        uint64_t aux = pow(2, n->n.level - memory.minLevel);
+        memory.freeBlocks += aux;
+        memory.usedBlocks -= aux;
+        return 1;
+    }
+
+    /* If min level, stop searching */
+    if (n->n.level == memory.minLevel) return 0;
+
+    /* Recursive search on childs */
+    uint64_t aux = delete_block(n->n.left, ptr);
+    if (aux == 0) aux = delete_block(n->n.right, ptr);
+
+    /* If found, update state and potentially merge */
+    if (aux == 1) merge_childs(n);
+    return aux;
+
+}
+
+/* Recursive function to get a node given a pointer */
+static node * get_node(node * n, uint8_t * ptr) {
+    /* If smaller addres or the block is free, return */
+    if (n->n.address > ptr || n->n.state == FREE)
+        return 0;
+
+    /* Same address and min level or both childs free, then found */
+    if (n->n.address == ptr && (n->n.level == memory.minLevel || (n->n.left->n.state == FREE && n->n.right->n.state == FREE)))
+        return n;
+
+    /* If min level, stop searching */
+    if (n->n.level == memory.minLevel) return 0;
+
+    /* Recursive search on childs */
+    node * aux = delete_block(n->n.left, ptr);
+    if (aux == 0) aux = delete_block(n->n.right, ptr);
+    return aux;
+}
+
+/* Prints all nodes in the order they are stored */
+static void printNodes(node * list) {
+    uint64_t final = pow(2, memory.maxLevel - memory.minLevel + 1) - 1;
+    for (uint64_t i = 0; i < final; i++) {
+        print("Index: %d - State: %d - Level: %d - Address: 0x", i, list[i].n.state, list[i].n.level);
+        printHex((uint64_t)list[i].n.address);
+        print("\n");
+    }
 }
 
 #endif

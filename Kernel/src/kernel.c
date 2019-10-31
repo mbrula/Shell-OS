@@ -22,7 +22,6 @@ static const uint64_t PageSize = 0x1000;
 /* Total amount of memory 512MB */
 static const uint64_t totalBytes = 0x20000000;
 
-
 typedef int (*EntryPoint)();
 
 void goToUserland() {
@@ -77,6 +76,6 @@ void * initializeKernelBinary() {
 }
 
 int main() {
-    goToUserland();	
+    goToUserland();
 	return 0;
 }

@@ -46,7 +46,7 @@ void * memcpy(void * destination, const void * source, uint64_t length) {
 	return destination;
 }
 
-/* Gets pow */
+/* Gets pow of a given number and base */
 uint64_t pow(int base, int exponent) {
 	int result = 1;
 	for (uint64_t i = 0; i < exponent; i++){

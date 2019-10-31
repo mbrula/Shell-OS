@@ -24,7 +24,7 @@ void mm_print_status();
 ** assuming ptr is a valid return from malloc */
 void * get_last_address(void * ptr);
 
-/* Prints memory state */
+/* Prints memory state (for testing purposes only) */
 void mm_print_state();
 
 #endif /* _MEM_MANAGER_H_ */
