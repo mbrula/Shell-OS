@@ -1,4 +1,3 @@
-
 GLOBAL _cli
 GLOBAL _sti
 GLOBAL picMasterMask
@@ -22,6 +21,7 @@ GLOBAL _exception06Handler
 EXTERN irqDispatcher
 EXTERN handleSyscall
 EXTERN exceptionDispatcher
+EXTERN scheduler
 
 SECTION .text
 
@@ -103,9 +103,26 @@ SECTION .text
 	iretq
 %endmacro
 
+%macro timerTickHandler 0
+	pushStateAll
+
+	mov rdi, rsp ; pasaje de stack pointer
+	call scheduler
+	mov rsp, rax
+
+	; signal pic EOI (End of Interrupt)
+	mov al, 20h
+	out 20h, al
+	
+	popStateAll
+	iretq
+%endmacro
+
 %macro sirqHandlerMaster 0
 	pushStateSome	; Todos los registros menos los utilizados por syscalls
-	call sirqDispatcher
+
+	call handleSyscall
+
 	popStateSome
 	iretq
 %endmacro
@@ -157,7 +174,7 @@ picSlaveMask:
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
-	irqHandlerMaster 0
+	timerTickHandler
 
 ;Keyboard
 _irq01Handler:
@@ -181,8 +198,7 @@ _irq05Handler:
 
 ;Syscall
 _sirqHandler:
-	call handleSyscall
-	iretq
+	sirqHandlerMaster
 
 ;Zero Division Exception
 _exception00Handler:
@@ -196,8 +212,6 @@ haltcpu:
 	cli
 	hlt
 	ret
-
-
 
 SECTION .bss
 	aux resq 1
