@@ -5,7 +5,7 @@
 int main(int argc, char const *argv[]) {
     while (1) {
 		puts("\n----------- pB -----------\n");
-		ps();
+		// ps();
 		sleep(500);
 	}	
 	return 0;

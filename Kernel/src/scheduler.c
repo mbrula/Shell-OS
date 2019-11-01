@@ -153,7 +153,6 @@ uint64_t kill(uint64_t pid) {
 /* Sets priority of the process given its PID */
 uint64_t set_priority(uint64_t pid, uint8_t n) {
     if (n > MAX_PRIO) n = MAX_PRIO;
-    if (n == 0) n = 1;
 
     nodeScheduler * node = search(pid);
     if (node == 0) return 0;

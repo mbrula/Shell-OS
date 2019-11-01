@@ -6,7 +6,7 @@ int main(int argc, char const *argv[]) {
     while (1) {
 		i++;
 		puts("\n########## pA ##########\n");
-		ps();
+		// ps();
 		sleep(1000);
 		// if (i == 5) {
 		// 	kill(2);
