@@ -154,7 +154,7 @@ int gets(char * string, uint64_t size) {
 }
 
 char getcharFd(uint64_t fd) {
-    char character = 0; // TODO change dis
+    char character = 0; // TODO fix dis when fd
     while(character == 0) syscall(READ_ID, fd, (uint64_t) &character, 1, 0, 0, 0);
     return character;
 }

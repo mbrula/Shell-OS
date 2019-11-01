@@ -259,8 +259,7 @@ void list_all() {
         process p = node->process;
         char* stat = p.state==0? "Ready" : (p.state==1? "Running":"Blocked");
         char* lvl = p.context==0? "Foreground" : "Background";
-        print(p.name); print("\t"); 
-        printHex(p.pid); print("\t");
+        print(p.name); print("\t%d\t", p.pid); 
         printHex(p.sp); print("\t"); 
         printHex(p.bp); print("\t"); 
         printHex((uint64_t)p.priority); print("\t"); 

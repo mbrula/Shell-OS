@@ -6,6 +6,7 @@
 #include <strings.h>
 #include <stack.h>
 #include <scheduler.h>
+#include <timelib.h>
 
 #include <process.h>
 
@@ -67,8 +68,8 @@ static void free_resources(process p) {
     //     free(aux2);
     // }  
     switch (p.res) {
-        case SEM: return; // TODO when mutex
-        case TIME: return; // TODO when time
+        case SEM: // TODO when mutex
+        case TIME: remove_node_T(p.pid);
         default: free_parent(p);       
     }
 }
