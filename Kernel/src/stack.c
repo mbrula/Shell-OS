@@ -1,6 +1,7 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <stdint.h>
+#include <scheduler.h>
 
 #include <stack.h>
 
@@ -27,7 +28,7 @@ stackFrame init_stack(void * entryPoint, void * stackBase) {
     ret.eflags = 0x202;
     ret.sp = (uint64_t) stackBase;
     ret.ss = 0x0;
-    ret.returnAddress = 0x0 /*(uint64_t)kill_current*/; // TODO when scheduler
+    ret.returnAddress = (uint64_t)kill_current;
 
     return ret;
 }

@@ -5,6 +5,7 @@
 #include <console.h>
 #include <strings.h>
 #include <stack.h>
+#include <scheduler.h>
 
 #include <process.h>
 
@@ -16,8 +17,8 @@ uint64_t add_process(void * entryPoint, char * name, level context, uint64_t arg
     process data = create_process(entryPoint, name, context, argc, argv, inAlias, outAlias);
    
     /* Add process to scheduler */
-    // add(data); TODO add to scheduler
-    // if (context == FORE && data.pid > 1)
+    add(data);
+    // if (context == FORE && data.pid > 1) TODO when mutex
     //     block(0);
     //     // block(SCREEN);
     return data.pid;
@@ -44,7 +45,7 @@ process create_process(void * entryPoint, char * name, level context, uint64_t a
     data.name = (char *) malloc(stringlen(name) + 1);
     stringcp(data.name, name);
     data.pid = c_pid++;
-    // data.ppid = getPid(); TODO when scheduler
+    data.ppid = get_pid();
     data.sp = (uint64_t) lastAddress - sizeof(stackFrame);
     data.bp = (uint64_t) stackBase;
     data.priority = 3;
@@ -52,7 +53,7 @@ process create_process(void * entryPoint, char * name, level context, uint64_t a
     data.state = READY;
     data.stack = processStack;
 
-    // print_process_stack(data); for teting purposes
+    // print_process_stack(data); for testing purposes
 
     return data;
 }
@@ -79,8 +80,7 @@ void remove(process p) {
 
 /* If a valid process, kill (used when ctrl + C) */
 void sig_int() {
-    // if (getPid() > 1) TODO when scheduler
-    //     killCurrent();
+    if (get_pid() > 1) kill_current();
 }
 
 /* Print process stack */
