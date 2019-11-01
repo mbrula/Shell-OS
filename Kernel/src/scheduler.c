@@ -1,5 +1,7 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+#include <lib.h>
+#include <memoryManager.h>
 #include <moduleAddresses.h>
 #include <process.h>
 #include <console.h>
@@ -25,7 +27,7 @@ static schedulerState stage;
 /* Gives control to processes on list   */
 uint64_t scheduler(uint64_t sp) {
     /* Only count timer if timer tick was not forced */
-    if (stage != BLOCKED && stage != DELETED && stage != STARTHALT) timer_handler(); 
+    if (stage != BLOCK && stage != DELETED && stage != STARTHALT) timer_handler(); 
 
     switch(stage) {
         /* When empty list, return the sp given (only at the begining) */
@@ -38,7 +40,7 @@ uint64_t scheduler(uint64_t sp) {
             return current->process.sp;
 
         /* Normal functionality */
-        case NORMAL: case BLOCKED: current->process.sp = sp; break;
+        case NORMAL: case BLOCK: current->process.sp = sp; break;
 
         /* If deleted previous current, not save sp and search */
         case DELETED:  break;
@@ -61,7 +63,7 @@ uint64_t scheduler(uint64_t sp) {
     
     nodeScheduler * toSet;
     /* If noraml or blocked don't consider current */
-    if (stage == NORMAL || stage == BLOCKED)
+    if (stage == NORMAL || stage == BLOCK)
         toSet = search_ready(current->next);
     /* If normal or halt, start checking from current */
     else toSet = search_ready(current);
@@ -190,7 +192,7 @@ uint64_t set_state(uint64_t pid, states state) {
     
     /* If we blocked the current process */
     node->process.state = state;
-    stage = BLOCKED;
+    stage = BLOCK;
     force_timer_tick();
     return 0;
 }
@@ -201,7 +203,7 @@ uint64_t block(resources res) {
     current->process.state = BLOCKED;
     current->process.res = res;
     if (res == SEM) /*current->process.sem = sem*/; // TODO when mutex
-    stage = BLOCKED;
+    stage = BLOCK;
     
     
     force_timer_tick();

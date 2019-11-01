@@ -6,7 +6,7 @@
 
 #include <process.h>
 
-typedef enum {EMPTY = 0, FIRST, NORMAL, BLOCKED, DELETED, HALT, STARTHALT} schedulerState;
+typedef enum {EMPTY = 0, FIRST, NORMAL, BLOCK, DELETED, HALT, STARTHALT} schedulerState;
 
 /* Structure for the node in scheduler */
 typedef struct node_sched {

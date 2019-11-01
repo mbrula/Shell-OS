@@ -10,9 +10,10 @@
 #include <console.h>
 #include <memoryManager.h>
 #include <process.h>
+#include <scheduler.h>
 //  <timelib.h>
 
-// #include <syscalls.h> testing purposes 
+#include <syscalls.h> //testing purposes 
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -79,9 +80,12 @@ void * initializeKernelBinary() {
 }
 
 int main() {
-	// char * v[] = {"50"};
-	// create_handler("SLEEP", 1, v, FORE, 0, 0);
-	// ((EntryPoint)sleepModuleAddress)();
-    goToUserland();
+	char * v[] = {"50"};
+	create_handler("SLEEP", 1, v, FORE, 0, 0);
+
+	// add_process(shellModuleAddress, "SHELL", FORE, 0, 0, 0, 1);
+
+	/* Wait for the process to be loaded */
+	while (!check_loaded());
 	return 0;
 }
