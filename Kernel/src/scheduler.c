@@ -199,7 +199,7 @@ uint64_t set_state(uint64_t pid, states state) {
 }
 
 /* Blocks current process (only used when blocked by resource) */
-uint64_t block(resources res) {
+uint64_t block(resources res /*, semNode sem*/) {
     if (current == 0) return 0;
     current->process.state = BLOCKED;
     current->process.res = res;
