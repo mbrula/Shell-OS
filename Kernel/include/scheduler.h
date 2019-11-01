@@ -44,7 +44,7 @@ states get_state(uint64_t pid);
 uint64_t set_state(uint64_t pid, states state);
 
 /* Blocks current process (only used when blocked by resource) */
-uint64_t block(resources res);
+uint64_t block(resources res /*, semNode sem*/); // TODO
 
 /* Unblocks process given its pid (only used when unblocked by resource) */
 uint64_t unblock(uint64_t pid);
