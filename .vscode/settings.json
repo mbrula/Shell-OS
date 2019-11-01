@@ -12,10 +12,11 @@
         "Bootloader": true,
         "Image": true,
         "Toolchain": true,
-        "Userland": true
+        "Userland": false
     },
     "files.associations": {
-        "process.h": "c"
+        "process.h": "c",
+        "clib.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

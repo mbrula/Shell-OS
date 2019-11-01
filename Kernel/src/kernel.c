@@ -10,9 +10,8 @@
 #include <console.h>
 #include <memoryManager.h>
 #include <process.h>
+#include <scheduler.h>
 //  <timelib.h>
-
-// #include <syscalls.h> testing purposes 
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -69,7 +68,7 @@ void * initializeKernelBinary() {
 
 	/* Creates memory manager at the end of the modules loaded */
 	create_manager(startOfMem, totalBytes);
-
+	init_scheduler();
 	init_video_driver();
   	init_console();
 	
@@ -79,9 +78,10 @@ void * initializeKernelBinary() {
 }
 
 int main() {
-	// char * v[] = {"50"};
-	// create_handler("SLEEP", 1, v, FORE, 0, 0);
-	// ((EntryPoint)sleepModuleAddress)();
-    goToUserland();
+	/* Add shell to scheduler */
+	add_process(shellModuleAddress, "SHELL", FORE, 0, 0, 0, 1);
+
+	/* Wait for the process to be loaded */
+	while (!check_if_loaded());
 	return 0;
 }

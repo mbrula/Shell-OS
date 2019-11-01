@@ -5,8 +5,12 @@
 #include <console.h>
 #include <strings.h>
 #include <stack.h>
+#include <scheduler.h>
 
 #include <process.h>
+
+/* Static auxiliary functions */
+static void free_parent(process p);
 
 /* Static count of the pids given */
 static uint64_t c_pid = 0;
@@ -16,10 +20,8 @@ uint64_t add_process(void * entryPoint, char * name, level context, uint64_t arg
     process data = create_process(entryPoint, name, context, argc, argv, inAlias, outAlias);
    
     /* Add process to scheduler */
-    // add(data); TODO add to scheduler
-    // if (context == FORE && data.pid > 1)
-    //     block(0);
-    //     // block(SCREEN);
+    add(data);
+    if (context == FORE && data.pid > 1) block(NONE);
     return data.pid;
 }
 
@@ -44,15 +46,14 @@ process create_process(void * entryPoint, char * name, level context, uint64_t a
     data.name = (char *) malloc(stringlen(name) + 1);
     stringcp(data.name, name);
     data.pid = c_pid++;
-    // data.ppid = getPid(); TODO when scheduler
+    data.ppid = get_pid();
     data.sp = (uint64_t) lastAddress - sizeof(stackFrame);
     data.bp = (uint64_t) stackBase;
     data.priority = 3;
     data.context = context;
     data.state = READY;
     data.stack = processStack;
-
-    // print_process_stack(data); for teting purposes
+    data.res = NONE;
 
     return data;
 }
@@ -64,10 +65,12 @@ static void free_resources(process p) {
     //     fdPointer * aux2 = aux;
     //     aux = aux->next;
     //     free(aux2);
-    // }
-    // if (p.state != BLOCKED) return;
-    // if (p.sem == 0) removeNodeT(p.pid);
-    // else deallocateSem(p.sem, p.pid);    
+    // }  
+    switch (p.res) {
+        case SEM: return; // TODO when mutex
+        case TIME: return; // TODO when time
+        default: free_parent(p);       
+    }
 }
 
 /* Deletes process */
@@ -79,8 +82,7 @@ void remove(process p) {
 
 /* If a valid process, kill (used when ctrl + C) */
 void sig_int() {
-    // if (getPid() > 1) TODO when scheduler
-    //     killCurrent();
+    if (get_pid() > 1) kill_current();
 }
 
 /* Print process stack */
@@ -96,4 +98,10 @@ void print_process_stack(process p) {
         print("\n");
     }
     print("\n-----------------------\n");
+}
+
+/* Set parent to ready if process is running on foreground */
+static void free_parent(process p) {
+    if (p.ppid >= 1 && p.context == FORE)
+        set_state(p.ppid, READY);
 }

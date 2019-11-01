@@ -24,5 +24,11 @@ void mm_print_status_handler();
 void mm_get_status_handler(uint64_t * total, uint64_t * occupied, uint64_t * free);
 
 uint64_t create_handler(char * name, uint64_t argc, char ** argv, level context, uint64_t inFd, uint64_t outFd);
+uint64_t kill_handler(uint64_t pid);
+uint64_t get_pid_handler();
+void list_all_process_handler();
+uint64_t set_priority_handler(uint64_t pid, uint8_t prio);
+uint64_t change_state_handler(uint64_t pid);
+void halt_handler();
 
 #endif /* _SYSCALLS_H_ */

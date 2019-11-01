@@ -26,7 +26,7 @@ static void newLine(){
     putchar('\n');
 }
 
-int main () {
+int main (int argc, char const *argv[]) {
     initShell();
     return 0;
 }

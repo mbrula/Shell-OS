@@ -10,6 +10,7 @@
 #include <moduleAddresses.h>
 #include <process.h>
 #include <strings.h>
+#include <scheduler.h>
 
 /* Located on loader.asm */
 extern void hang();
@@ -114,3 +115,34 @@ uint64_t create_handler(char * name, uint64_t argc, char ** argv, level context,
     return add_process(entryPoint, name, context, argc, argv, inFd, outFd);
 }
 
+uint64_t kill_handler(uint64_t pid) {
+    return kill(pid);
+}
+
+uint64_t get_pid_handler() {
+    return get_pid();
+}
+
+void list_all_process_handler() {
+    list_all();
+}
+
+uint64_t set_priority_handler(uint64_t pid, uint8_t prio) {
+    return set_priority(pid, prio);
+}
+
+uint64_t change_state_handler(uint64_t pid) {
+    states state = get_state(pid);
+	switch (state) {
+		case READY:
+			return set_state(pid, BLOCKED);
+		case BLOCKED:
+			return set_state(pid, READY);
+		default:
+			return 1;
+	}
+}
+
+void halt_handler() {
+    _hlt();
+}
