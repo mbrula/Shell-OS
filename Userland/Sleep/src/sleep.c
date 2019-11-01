@@ -4,7 +4,7 @@
 
 int main(int argc, char const *argv[] ) {
 	int millis = 1000;
-	if (argc == 1) millis = atoi(argv[1]);
+	if (argc == 1) millis = atoi(argv[0]);
     sleep(millis);
 	puts("\nExiting\n");
 	return 0;

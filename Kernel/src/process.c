@@ -53,6 +53,7 @@ process create_process(void * entryPoint, char * name, level context, uint64_t a
     data.context = context;
     data.state = READY;
     data.stack = processStack;
+    data.res = NONE;
 
     return data;
 }

@@ -43,7 +43,7 @@ uint64_t scheduler(uint64_t sp) {
         case NORMAL: case BLOCK: current->process.sp = sp; break;
 
         /* If deleted previous current, not save sp and search */
-        case DELETED:  break;
+        case DELETED: break;
 
         /* When halt is runnig */
         case HALT: pHalt->process.sp = sp; break;
@@ -145,6 +145,7 @@ uint64_t kill(uint64_t pid) {
         current = toErase->next;
         stage = DELETED;
     }
+
     remove(toErase->process);
     free(toErase);
     return pid;              

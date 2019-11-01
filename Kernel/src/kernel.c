@@ -68,7 +68,7 @@ void * initializeKernelBinary() {
 
 	/* Creates memory manager at the end of the modules loaded */
 	create_manager(startOfMem, totalBytes);
-
+	init_scheduler();
 	init_video_driver();
   	init_console();
 	
@@ -78,9 +78,8 @@ void * initializeKernelBinary() {
 }
 
 int main() {
-	uint64_t pida = add_process(processAModuleAddress, "PA", FORE, 0, 0, 0, 1);
-	uint64_t pidb = add_process(processBModuleAddress, "PB", FORE, 0, 0, 0, 1);
-	set_priority(pidb, 0);
+	/* Add shell to scheduler */
+	add_process(shellModuleAddress, "SHELL", FORE, 0, 0, 0, 1);
 
 	/* Wait for the process to be loaded */
 	while (!check_if_loaded());
