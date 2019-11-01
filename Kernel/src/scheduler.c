@@ -111,12 +111,6 @@ uint8_t add(process p) {
 
 /* Kills current process */
 void kill_current() {
-    /* Set parent to ready if process is running on foreground */
-    uint64_t ppid = get_ppid();
-    if (ppid >= 1 && current->process.context == FORE)
-        set_state(ppid, READY);
-
-    /* Killl process and force timer tick */
     kill(get_pid());
     force_timer_tick();
 }
@@ -177,11 +171,13 @@ uint64_t set_state(uint64_t pid, states state) {
     if (state == RUNNING) return 0;
     nodeScheduler * node = search(pid);
     if (node == 0) return 0;
-        
+    
+    /* Cannot set to ready a process blocked by a resource */
+    if (state == READY && node->process.res != NONE) return 0; 
+
     /* If not the one currently running */
     if (node != current) {
         node->process.state = state;
-        // node->process.sem = 0; TODO when mutex
         return 1;
     }
 
@@ -199,13 +195,27 @@ uint64_t set_state(uint64_t pid, states state) {
     return 0;
 }
 
-/* Blocks current process using a sem */
-uint64_t block() {
+/* Blocks current process (only used when blocked by resource) */
+uint64_t block(resources res) {
     if (current == 0) return 0;
     current->process.state = BLOCKED;
+    current->process.res = res;
+    if (res == SEM) /*current->process.sem = sem*/; // TODO when mutex
     stage = BLOCKED;
-    // current->process.sem = sem; // TODO when mutex
+    
+    
     force_timer_tick();
+    return 1;
+}
+
+/* Unblocks process given its pid (only used when blocked by resource) */
+uint64_t unblock(uint64_t pid) {
+    if (current == 0) return 0;
+    nodeScheduler * node = search(pid);
+    if (node == 0) return 0;
+
+    node->process.res = NONE;
+    node->process.state = READY;
     return 1;
 }
 

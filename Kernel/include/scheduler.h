@@ -43,8 +43,11 @@ states get_state(uint64_t pid);
 /* Sets the state of the process given its PID */
 uint64_t set_state(uint64_t pid, states state);
 
-/* Blocks current process for using sem */
-uint64_t block();
+/* Blocks current process (only used when blocked by resource) */
+uint64_t block(resources res);
+
+/* Unblocks process given its pid (only used when unblocked by resource) */
+uint64_t unblock(uint64_t pid);
 
 /* Returns current process pid */
 uint64_t get_pid();

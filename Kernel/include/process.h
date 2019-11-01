@@ -9,7 +9,7 @@
 typedef enum {READY = 0, RUNNING, BLOCKED, UNDEFINED} states;
 
 /* Type of resources used by the process */
-typedef enum {NONE = 0, TIME, READ, WRITE, SCREEN} resources;
+typedef enum {NONE = 0, TIME, SEM} resources;
 
 /* Defines for the level of the process */
 typedef enum {FORE = 0, BACK} level;
@@ -32,7 +32,8 @@ typedef struct {
     states state;
 
     /* Resources */
-    
+    resources res;
+    // TODO add sem here    
 } process;
 
 /* Creates a new process and adds it to scheduler */

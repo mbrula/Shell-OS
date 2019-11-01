@@ -9,6 +9,9 @@
 
 #include <process.h>
 
+/* Static auxiliary functions */
+static void free_parent(process p);
+
 /* Static count of the pids given */
 static uint64_t c_pid = 0;
 
@@ -18,9 +21,7 @@ uint64_t add_process(void * entryPoint, char * name, level context, uint64_t arg
    
     /* Add process to scheduler */
     add(data);
-    // if (context == FORE && data.pid > 1) TODO when mutex
-    //     block(0);
-    //     // block(SCREEN);
+    if (context == FORE && data.pid > 1) block(NONE);
     return data.pid;
 }
 
@@ -65,10 +66,12 @@ static void free_resources(process p) {
     //     fdPointer * aux2 = aux;
     //     aux = aux->next;
     //     free(aux2);
-    // }
-    // if (p.state != BLOCKED) return;
-    // if (p.sem == 0) removeNodeT(p.pid);
-    // else deallocateSem(p.sem, p.pid);    
+    // }  
+    switch (p.res) {
+        case SEM: return; // TODO when mutex
+        case TIME: return; // TODO when time
+        default: free_parent(p);       
+    }
 }
 
 /* Deletes process */
@@ -96,4 +99,10 @@ void print_process_stack(process p) {
         print("\n");
     }
     print("\n-----------------------\n");
+}
+
+/* Set parent to ready if process is running on foreground */
+static void free_parent(process p) {
+    if (p.ppid >= 1 && p.context == FORE)
+        set_state(p.ppid, READY);
 }

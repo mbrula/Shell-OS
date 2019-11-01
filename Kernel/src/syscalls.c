@@ -137,7 +137,6 @@ uint64_t change_state_handler(uint64_t pid) {
 		case READY:
 			return set_state(pid, BLOCKED);
 		case BLOCKED:
-			// TODO check if its blocked by a resource
 			return set_state(pid, READY);
 		default:
 			return 1;
