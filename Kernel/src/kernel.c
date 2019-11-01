@@ -13,8 +13,6 @@
 #include <scheduler.h>
 //  <timelib.h>
 
-#include <syscalls.h> //testing purposes 
-
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -80,10 +78,9 @@ void * initializeKernelBinary() {
 }
 
 int main() {
-	char * v[] = {"sleep", "500", ""};
-	create_handler("SLEEP", 1, v, FORE, 0, 0);
-
-	// add_process(shellModuleAddress, "SHELL", FORE, 0, 0, 0, 1);
+	uint64_t pida = add_process(processAModuleAddress, "PA", FORE, 0, 0, 0, 1);
+	uint64_t pidb = add_process(processBModuleAddress, "PB", FORE, 0, 0, 0, 1);
+	set_priority(pidb, 0);
 
 	/* Wait for the process to be loaded */
 	while (!check_if_loaded());

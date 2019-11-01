@@ -12,7 +12,7 @@
         "Bootloader": true,
         "Image": true,
         "Toolchain": true,
-        "Userland": false
+        "Userland": true
     },
     "files.associations": {
         "process.h": "c",
