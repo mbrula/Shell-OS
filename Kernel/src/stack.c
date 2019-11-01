@@ -8,7 +8,7 @@
 /* Initializes stack */
 stackFrame init_stack(void * entryPoint, void * stackBase) {
     stackFrame ret;
-    ret.r15 = 0x0;
+    ret.r15 = 0x1;
 	ret.r14 = 0x0;
 	ret.r13 = 0x0;
 	ret.r12 = 0x0;

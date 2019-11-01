@@ -54,7 +54,7 @@ process create_process(void * entryPoint, char * name, level context, uint64_t a
     data.state = READY;
     data.stack = processStack;
 
-    // print_process_stack(data); for testing purposes
+    print_process_stack(data); //for testing purposes
 
     return data;
 }

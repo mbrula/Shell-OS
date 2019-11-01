@@ -80,12 +80,12 @@ void * initializeKernelBinary() {
 }
 
 int main() {
-	char * v[] = {"50"};
+	char * v[] = {"sleep", "500", ""};
 	create_handler("SLEEP", 1, v, FORE, 0, 0);
 
 	// add_process(shellModuleAddress, "SHELL", FORE, 0, 0, 0, 1);
 
 	/* Wait for the process to be loaded */
-	while (!check_loaded());
+	while (!check_if_loaded());
 	return 0;
 }

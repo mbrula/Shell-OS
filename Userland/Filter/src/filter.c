@@ -4,7 +4,7 @@
 
 static int esVocal(int car);
 
-int main() {
+int main(int argc, char const *argv[]) {
 	int car;
 	putchar('\n');
 	while ((car = getchar()) >= 0) {
