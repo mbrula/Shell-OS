@@ -21,8 +21,6 @@
 #define FOREGROUND      0
 #define BACKGROUND      1
 
-#define EOF         255
-
 #define MAX_LENGTH  200
 
 void puts(const char * string);
