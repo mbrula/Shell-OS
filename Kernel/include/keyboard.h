@@ -6,8 +6,7 @@
 #define RIGHT_KEY  26
 #define DOWN_KEY  25
 
+/* Handle keyboard in */
 void keyboard_handler();
-char toUpper(char car);
-char read_character();
 
 #endif

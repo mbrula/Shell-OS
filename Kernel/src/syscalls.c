@@ -4,7 +4,7 @@
 #include <keyboard.h>
 #include <timelib.h>
 #include <console.h>
-#include <naiveConsole.h>
+// #include <naiveConsole.h>
 #include <sound.h>
 #include <memoryManager.h>
 #include <moduleAddresses.h>
@@ -14,30 +14,17 @@
 
 #include <mutex.h>
 #include <interrupts.h>
+#include <fileDescriptors.h>
 
 /* Located on loader.asm */
 extern void hang();
 
-void read_handler(uint64_t fd, char * buff, uint64_t count) {
-    // File descriptor doesn't matter
-    for (int i = 0; i < count; i ++)
-        buff[i] = read_character();
+void read_handler(uint64_t fd, char * buffer, uint64_t count) {
+    read(fd, buffer, count);
 }
 
-void write_handler(uint64_t fd, const char * buff, uint64_t count) {
-    switch (fd) {
-        case STDIN:
-        case STDOUT:
-            print_N(buff, count);
-            //ncPrint(buff);
-            break;
-        case STDERR:
-            printError_N(buff, count);
-            //ncPrintError(buff);
-            break;
-        default:
-            break;
-    }
+void write_handler(uint64_t fd, const char * buffer, uint64_t count) {
+    write(fd, buffer, count);
 }
 
 uint64_t time_handler() {

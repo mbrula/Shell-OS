@@ -11,9 +11,6 @@ static mutNode * first = 0;
 /* Check if a mutex pointer belongs to the mutex list */
 static int search_mutex(mutNode * mutex);
 
-/* Print list of blocked processes */
-static void print_blocked_processes(waitNodeMut * blocked);
-
 /* Opens an existing mutex */
 mutNode * open_mutex(char * name) {
     mutNode * iterator = first;
@@ -129,9 +126,12 @@ void deallocate_mutex(mutNode * mutex, uint64_t pid) {
 
     /* Check if mutex is locked by the PID process */
     if (mutex->mutex.pidAquired == pid) {
-        /* If mutex init was 1, restore post mutex */
-        if (mutex->mutex.init)
+        print("\n\nSoy yo el que lo bloquea a %s", mutex->mutex.name);
+        /* If mutex init was 0, restore post mutex */
+        if (mutex->mutex.init == 0){
+            print("\n\nHago un post");
             post_mutex(mutex);
+        }
         return;
     }
 
@@ -169,11 +169,12 @@ void show_all_mutex() {
 
     /* Print each mutex's state */
     mutNode * iterator = first;
-    print("\nName\t\tState\t\tBlocked Processes\n");
+    print("\nName\t\tState\t\t\tBlocked Processes\n");
     while (iterator != 0) {
         print(iterator->mutex.name); print("\t\t"); 
         print((iterator->mutex.lock) ? "Locked" : "Unlocked"); print("\t\t");
-        print_blocked_processes(iterator->mutex.blocked);
+        print_blocked_processes(iterator);
+        print("\n");
         iterator = iterator->next;
     }
 }
@@ -188,8 +189,9 @@ static int search_mutex(mutNode * mutex) {
 }
 
 /* Print list of blocked processes */
-static void print_blocked_processes(waitNodeMut * blocked) {
-    waitNodeMut * iterator = blocked;
+void print_blocked_processes(mutNode * mutex) {
+    if (mutex == 0) return;
+    waitNodeMut * iterator = mutex->mutex.blocked;
     while (iterator != 0) {
         print(" - %d", iterator->pid);
         iterator = iterator->next;

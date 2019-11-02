@@ -21,7 +21,8 @@
         "algorithm": "c",
         "processa.h": "c",
         "stdint.h": "c",
-        "mutex.h": "c"
+        "mutex.h": "c",
+        "filedescriptors.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

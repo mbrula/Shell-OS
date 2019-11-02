@@ -47,4 +47,7 @@ void deallocate_mutex(mutNode * mutex, uint64_t pid);
 /* Print all mutexes */
 void show_all_mutex();
 
+/* Print list of blocked processes */
+void print_blocked_processes(mutNode * mutex);
+
 #endif /* _BINARY_SEM_H_ */
