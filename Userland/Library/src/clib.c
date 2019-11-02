@@ -27,6 +27,18 @@
 
 #define HALT_ID     19
 
+#define PIPE_NEW_ID     20
+#define PIPE_OPEN_ID    21
+#define PIPE_CLOSE_ID   22
+#define PIPE_STATUS_ID  23
+
+#define SEM_NEW_ID      24
+#define SEM_OPEN_ID     25
+#define SEM_CLOSE_ID    26
+#define SEM_WAIT_ID     27
+#define SEM_POST_ID     28
+#define SEM_STATUS_ID   29
+
 #define MAX_BUFFER 100
 
 void putchar(uint8_t character) {
@@ -319,32 +331,61 @@ uint64_t changeState(uint64_t pid) {
 }
 
 /* Create a new named pipe */
-uint64_t newPipe(char * name) {
-    // return syscall(PIPE_ID, name, 0, 0, 0, 0, 0);
-    return 0;
+int newPipe(char * name) {
+    return syscall(PIPE_NEW_ID, (uint64_t) name, 0, 0, 0, 0, 0);
+}
+
+/* Open an existing named pipe */
+int pipeOpen(char * name) {
+    return syscall(PIPE_OPEN_ID, (uint64_t) name, 0, 0, 0, 0, 0);
+}
+
+/* Close an existing named pipe */
+void pipeClose(int fd) {
+    syscall(PIPE_CLOSE_ID, fd, 0, 0, 0, 0, 0);
 }
 
 /* List all pipes (STDOUT) */
 void pipeStatus() {
-    // syscall(PIPE_STATUS_ID, STDOUT, 0, 0, 0, 0, 0);
+    syscall(PIPE_STATUS_ID, STDOUT, 0, 0, 0, 0, 0);
 }
 
 /* List all pipes (outFd) */
 void pipeStatusFd(uint64_t outFd) {
-    // syscall(PIPE_STATUS_ID, outFd, 0, 0, 0, 0, 0);
+    syscall(PIPE_STATUS_ID, outFd, 0, 0, 0, 0, 0);
 }
 
-// newSem
-// closeSem
-// wait
-// post
+/* Create a new named semaphore */
+uint64_t newSem(char * name, uint64_t init) {
+    return syscall(SEM_NEW_ID, (uint64_t) name, init, 0, 0, 0, 0);
+}
+
+/* Open an existing named semaphore */
+uint64_t semOpen(char * name) {
+    return syscall(SEM_OPEN_ID, (uint64_t) name, 0, 0, 0, 0, 0);
+}
+
+/* Close an existing named semaphore */
+void semClose(uint64_t sem) {
+    syscall(SEM_CLOSE_ID, sem, 0, 0, 0, 0, 0);
+}
+
+/* Wait for a named semaphore */
+void semWait(uint64_t sem) {
+    syscall(SEM_WAIT_ID, sem, 0, 0, 0, 0, 0);
+}
+
+/* Post on a named semaphore */
+void semPost(uint64_t sem) {
+    syscall(SEM_POST_ID, sem, 0, 0, 0, 0, 0);
+}
 
 /* List all semaphores (STDOUT) */
 void semStatus() {
-    // syscall(SEM_STATUS_ID, STDOUT, 0, 0, 0, 0, 0);
+    syscall(SEM_STATUS_ID, STDOUT, 0, 0, 0, 0, 0);
 }
 
 /* List all semaphores (outFd) */
 void semStatusFd(uint64_t outFd) {
-    // syscall(SEM_STATUS_ID, outFd, 0, 0, 0, 0, 0);
+    syscall(SEM_STATUS_ID, outFd, 0, 0, 0, 0, 0);
 }

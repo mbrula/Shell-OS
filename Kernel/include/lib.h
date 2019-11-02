@@ -21,6 +21,12 @@ void write_port(char port, char reg);
 /* Makes an atomic swap using xchg */
 void atom_swap(uint64_t * dir, uint64_t value);
 
+/* Aquire a mutex using xchg. Sets 1 and returns prev value */
+uint64_t mutex_acquire(uint64_t * dir);
+
+/* Release a mutex using xchg. Sets 0 and returns prev value */
+uint64_t mutex_release(uint64_t * dir);
+
 /* Forces timer tick to interrupt */
 uint64_t force_timer_tick();
 

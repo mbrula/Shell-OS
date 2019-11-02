@@ -2,6 +2,7 @@
 #define _PROCESS_H_
 
 #include <stdint.h>
+#include <mutex.h>
 
 #define STACK_SIZE	3000
 
@@ -33,7 +34,7 @@ typedef struct {
 
     /* Resources */
     resources res;
-    // TODO add sem here    
+    mutNode * mutex;  
 } process;
 
 /* Creates a new process and adds it to scheduler */

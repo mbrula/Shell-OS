@@ -12,6 +12,9 @@
 #include <strings.h>
 #include <scheduler.h>
 
+#include <mutex.h>
+#include <interrupts.h>
+
 /* Located on loader.asm */
 extern void hang();
 
@@ -106,6 +109,10 @@ static void * get_module_address(char * name) {
         return filterModuleAddress;
     if (stringcmp(name, "PHYLO"))
         return phyloModuleAddress;
+    if (stringcmp(name, "PROCESS_A"))
+        return processAModuleAddress;
+    if (stringcmp(name, "PROCESS_B"))
+        return processBModuleAddress;
     return 0;
 }
 
@@ -145,4 +152,47 @@ uint64_t change_state_handler(uint64_t pid) {
 
 void halt_handler() {
     _hlt();
+}
+
+int new_pipe_handler(char * name) {
+    // return newPipe(name);
+    return 0;
+}
+
+int pipe_open_handler(char * name) {
+    // return openPipe(name);
+    return 0;
+}
+
+void pipe_close_handler(int fd) {
+    // closePipe(fd);
+}
+
+void pipe_status_handler(){
+    // showAllPipes();
+}
+
+// TODO: Change to Semaphore when implemented
+uint64_t new_sem_handler(char * name, uint64_t init){
+    return (uint64_t) new_mutex(name, init);
+}
+
+uint64_t sem_open_handler(char * name) {
+    return (uint64_t) open_mutex(name);
+}
+
+void sem_close_handler(mutNode * sem){
+    close_mutex(sem);
+}
+
+void sem_wait_handler(mutNode * sem){
+    wait_mutex(sem);
+}
+
+void sem_post_handler(mutNode * sem){
+    post_mutex(sem);
+}
+
+void sem_status_handler(){
+    show_all_mutex();
 }

@@ -3,6 +3,8 @@ GLOBAL write_port
 GLOBAL read_port
 GLOBAL force_timer_tick
 GLOBAL atom_swap
+GLOBAL mutex_acquire
+GLOBAL mutex_release
 
 section .text
 
@@ -10,6 +12,37 @@ section .text
 atom_swap:
 	xchg [rdi], rsi
 	ret
+
+; uint64_t mutex_acquire(uint64_t * dir);
+mutex_acquire:
+	push rsi
+
+	mov rsi, 1
+	xchg [rdi], rsi
+	mov rax, rsi
+
+	pop rsi
+	ret
+
+; Me devuelve el estado previo al mutex_acquire
+; Si me devuelve 0, fui el primero. 
+; Si me devuelve 1, ya estaba adquirido --> me bloqueo
+
+; uint64_t mutex_release(uint64_t * dir);
+mutex_release:
+	push rsi
+
+	mov rsi, 0
+	xchg [rdi], rsi
+	mov rax, [rdi]
+
+	pop rsi
+	ret
+
+; mutex_release(sem->sem.lock)
+; Me devuelve el estado previo al mutex_acquire
+; Si me devuelve 1, desbloquee al semaforo. 
+; Si me devuelve 0, ya estaba desbloqueado
 
 ; void write_port(char port, char reg)
 write_port:
