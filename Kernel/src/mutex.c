@@ -28,7 +28,7 @@ mutNode * open_mutex(char * name) {
 /* Create a new mutex */
 mutNode * new_mutex(char * name, uint8_t init) {
     /* Check if the mutex already exists */
-    if (first != 0 && open_mutex(name) != 0) return 0;
+    if (open_mutex(name) != 0) return 0; // TODO: DEVOLVEMOS EL mutNode * existente???
 
     /* Create mutex */
     mutex mutex;
