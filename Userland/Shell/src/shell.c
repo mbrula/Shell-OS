@@ -8,13 +8,13 @@
 static char * command_strings[] = {"help", "date", 
                                         "time", "sleep", "clear", "beep", "door", "div_zero", 
                                         "inv_op", "exit", "mem", "ps", "kill", "block", "nice", 
-                                        "loop", "cat", "wc", "filter", "sem", "pipe", "phylo"};
-static int command_count = 22;
+                                        "loop", "cat", "wc", "filter", "sem", "pipe", "phylo", "test"};
+static int command_count = 23;
 /* Command functions associated with command inputs */
 void (* command_functions[]) (int argc, char * argv[], int ground, int inFd, int outFd) = {help_cmd, date_cmd, 
                                             time_cmd, sleep_cmd, clear_cmd, beep_cmd, door_cmd, div_zero_cmd, 
                                             inv_op_cmd, exit_cmd, mem_cmd, ps_cmd, kill_cmd, block_cmd, nice_cmd,
-                                            loop_cmd, cat_cmd, wc_cmd, filter_cmd, sem_cmd, pipe_cmd, phylo_cmd};
+                                            loop_cmd, cat_cmd, wc_cmd, filter_cmd, sem_cmd, pipe_cmd, phylo_cmd, test_cmd};
 
 static int getCommandIndex(char * input, int * cursor);
 int pipeNumber = 0;
@@ -356,5 +356,13 @@ void phylo_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
         puts("\nNo puedes correr este comando en background! Requiere ingreso por STDIN.");
     } else {
         newProcess("PHYLO", argc, argv, ground, inFd, outFd);
+    }
+}
+
+void test_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
+    if (ground == BACKGROUND) {
+        puts("\nNo puedes correr este comando en background! Requiere ingreso por STDIN.");
+    } else {
+        newProcess("PROCESS_A", argc, argv, ground, inFd, outFd);
     }
 }

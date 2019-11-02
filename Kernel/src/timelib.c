@@ -38,7 +38,7 @@ void sleep(uint64_t millis) {
     if (millis < 55) return;
     uint64_t pid = get_pid();
     add_node_T(pid, millis);
-    block(TIME);
+    block(TIME, 0);
 }
 
 /* Updates the values off all the waiting processes */

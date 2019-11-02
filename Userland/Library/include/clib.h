@@ -64,10 +64,40 @@ void psFd(uint64_t outFd);
 uint64_t setPriority(uint64_t pid, uint64_t n);
 uint64_t changeState(uint64_t pid);
 
-uint64_t newPipe(char * name);
+/* Create a new named pipe */
+int newPipe(char * name);
+
+/* Open an existing named pipe */
+int pipeOpen(char * name);
+
+/* Close an existing named pipe */
+void pipeClose(int fd);
+
+/* List all pipes (STDOUT) */
 void pipeStatus();
+
+/* List all pipes (outFd) */
 void pipeStatusFd(uint64_t outFd);
+
+/* Create a new named semaphore */
+uint64_t newSem(char * name, uint64_t init);
+
+/* Open an existing named semaphore */
+uint64_t semOpen(char * name);
+
+/* Close an existing named semaphore */
+void semClose(uint64_t sem);
+
+/* Wait for a named semaphore */
+void semWait(uint64_t sem);
+
+/* Post on a named semaphore */
+void semPost(uint64_t sem);
+
+/* List all semaphores (STDOUT) */
 void semStatus();
+
+/* List all semaphores (outFd) */
 void semStatusFd(uint64_t outFd);
 
 extern uint64_t syscall(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);

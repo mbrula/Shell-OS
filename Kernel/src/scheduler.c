@@ -199,11 +199,11 @@ uint64_t set_state(uint64_t pid, states state) {
 }
 
 /* Blocks current process (only used when blocked by resource) */
-uint64_t block(resources res /*, semNode sem*/) {
+uint64_t block(resources res , mutNode * mutex) {
     if (current == 0) return 0;
     current->process.state = BLOCKED;
     current->process.res = res;
-    if (res == SEM) /*current->process.sem = sem*/; // TODO when mutex
+    if (res == SEM) current->process.mutex = mutex;
     stage = BLOCK;
     
     

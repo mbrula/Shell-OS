@@ -22,7 +22,7 @@ uint64_t add_process(void * entryPoint, char * name, level context, uint64_t arg
    
     /* Add process to scheduler */
     add(data);
-    if (context == FORE && data.pid > 1) block(NONE);
+    if (context == FORE && data.pid > 1) block(NONE, 0);
     return data.pid;
 }
 
@@ -55,6 +55,7 @@ process create_process(void * entryPoint, char * name, level context, uint64_t a
     data.state = READY;
     data.stack = processStack;
     data.res = NONE;
+    data.mutex = 0;
 
     return data;
 }
@@ -68,7 +69,7 @@ static void free_resources(process p) {
     //     free(aux2);
     // }  
     switch (p.res) {
-        case SEM: // TODO when mutex
+        case SEM: deallocate_mutex(p.mutex, p.pid);
         case TIME: remove_node_T(p.pid);
         default: free_parent(p);       
     }
@@ -81,6 +82,7 @@ void remove(process p) {
     free(p.name);
 }
 
+// ToDo: Ver que no puedan killear al phylo??
 /* If a valid process, kill (used when ctrl + C) */
 void sig_int() {
     if (get_pid() > 1) kill_current();

@@ -16,7 +16,12 @@
     },
     "files.associations": {
         "process.h": "c",
-        "clib.h": "c"
+        "clib.h": "c",
+        "moduleaddresses.h": "c",
+        "algorithm": "c",
+        "processa.h": "c",
+        "stdint.h": "c",
+        "mutex.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

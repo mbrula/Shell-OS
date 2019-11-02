@@ -5,6 +5,7 @@
 #define SIZE 4000
 
 #include <process.h>
+#include <mutex.h>
 
 typedef enum {EMPTY = 0, FIRST, NORMAL, BLOCK, DELETED, HALT, STARTHALT} schedulerState;
 
@@ -44,7 +45,7 @@ states get_state(uint64_t pid);
 uint64_t set_state(uint64_t pid, states state);
 
 /* Blocks current process (only used when blocked by resource) */
-uint64_t block(resources res /*, semNode sem*/); // TODO
+uint64_t block(resources res , mutNode * mutex) ;
 
 /* Unblocks process given its pid (only used when unblocked by resource) */
 uint64_t unblock(uint64_t pid);
