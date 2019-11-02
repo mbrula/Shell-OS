@@ -1,18 +1,14 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <clib.h>
+#include <utils.h>
 
 int main(int argc, char const *argv[] ) {
-	puts("\nARGV[0] is :");
-	puts(argv[0]);
-	puts("\nARGV[1] is :");
-	puts(argv[1]);
-	puts("\nARGC is :");
-	putchar('0' + (char)argc);
+	if (argc < 1) return 1;
+	uint64_t seconds = (uint64_t) atoi(argv[0]);
+	if (seconds == -1)
+		return 1;
 
-	int millis = 5000;
-	// if (argc == 1) millis = atoi(argv[0]);
-    sleep(millis);
-	puts("\nExiting\n");
+    sleep(seconds * 1000);
 	return 0;
 } 

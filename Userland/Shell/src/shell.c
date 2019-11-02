@@ -181,12 +181,9 @@ void time_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
 
 /* Sleep Command - Creates a process that stays blocked n seconds */
 void sleep_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
-    int seconds;
-    if (argc < 1 || (seconds = atoi(argv[0])) < 0) {
+    if (argc < 1 || atoi(argv[0]) < 0) {
         puts("\nIngreso invalido. Debe ingresar el numero de segundos que desea esperar como primer argumento.");
-    } else {        
-        int millis = seconds * 1000;
-        // sleep(millis);
+    } else {
         int pid = newProcess("SLEEP", argc, argv, ground, inFd, outFd);
         if (ground == BACKGROUND)
             printf("\nCreate %s. PID = %d", (pid == 0) ? "unsuccesfull":"successfull", pid);
