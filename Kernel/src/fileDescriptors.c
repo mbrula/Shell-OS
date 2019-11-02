@@ -229,6 +229,13 @@ static nodeFd * add_fd_list(char* name) {
     }
     /* Pipes are flagged outside */
     newFd->data.pipe = 0;
+    /* Malloc space for buffer */
+    newFd->data.buffer = (char *) malloc(BUFFER_SIZE);
+    if (newFd->data.buffer == 0) { // No more Memory
+        free(newFd->data.name);
+        free(newFd);
+        return 0;
+    }
 
     /* Initialize indexes */
     newFd->data.count = 0;
