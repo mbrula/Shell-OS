@@ -15,6 +15,13 @@ typedef enum {NONE = 0, TIME, SEM} resources;
 /* Defines for the level of the process */
 typedef enum {FORE = 0, BACK} level;
 
+/* Structure for filedescriptor nodes from the process */
+typedef struct fd_node {
+    int fd;
+    int alias;
+    struct fd_node * next;
+} fdNode;
+
 /* Structure that defines a process */
 typedef struct {
     /* Properties */
@@ -34,7 +41,8 @@ typedef struct {
 
     /* Resources */
     resources res;
-    mutNode * mutex;  
+    mutNode * mutex;
+    fdNode * firstFd;
 } process;
 
 /* Creates a new process and adds it to scheduler */
@@ -51,5 +59,14 @@ void sig_int();
 
 /* Print process stack */
 void print_process_stack(process p);
+
+/* Add new filedescriptor to process list */
+fdNode * add_process_fd(int fd);
+
+/* Remove a filedescriptor from process list */
+void remove_process_fd(int fd);
+
+/* Return realFd (Alias) fro the current process or -1 if not listed */
+int get_process_alias(int fd);
 
 #endif /* _PROCESS_H_ */

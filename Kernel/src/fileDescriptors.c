@@ -23,16 +23,18 @@ void init_fds() {
     add_fd_list("stderr");
 }
 
-// TODO: Check if mutCant has to be a COUNT SEMAPHORE
-// IF MORE THAN ONE EOF IS SENT or sth like that
+// TODO: Check if mutCant has to be a COUNT SEMAPHORE IF MORE THAN ONE EOF IS SENT or sth like that
 /* Write on buffer given fd number */
 void write(int fd, const char * buffer, int count) {
     /* If no characters were sent, return */
     if (count == 0) return;
 
-    // TODO: AGREGAR EL ALIAS CUANDO LO TENGAN LOS PROCESO
+    /* Get realFd (Alias) from current process */
+    int aliasFd = get_process_alias(fd);
+    if (aliasFd < 0) return; // FD not listed
+    
     /* Check if node with fd exists */
-    nodeFd * node = search_fd(fd);
+    nodeFd * node = search_fd(aliasFd);
     if (node == 0) return;
 
     /* Wait for the write end to be free */
@@ -75,9 +77,12 @@ void read(int fd, char * buffer, int count) {
     /* If no characters were sent, return */
     if (count == 0) return;
 
-    // TODO: AGREGAR EL ALIAS CUANDO LO TENGAN LOS PROCESO
+    /* Get realFd (Alias) from current process */
+    int aliasFd = get_process_alias(fd);
+    if (aliasFd < 0) return; // FD not listed
+    
     /* Check if node with fd exists */
-    nodeFd * node = search_fd(fd);
+    nodeFd * node = search_fd(aliasFd);
     if (node == 0) return;
 
     /* Wait for the read end to be free */
@@ -126,7 +131,7 @@ int new_pipe(char * name) {
     node->data.pipe = 1;
 
     /* Add the node to process fileDescriptor list */
-    // addFd(node->data.fd) // TODO: Agregar el nodo a la lista del PROCESO
+    add_process_fd(node->data.fd);
 
     return node->data.fd;
 }
@@ -138,7 +143,7 @@ int open_pipe(char * name) {
     if (node == 0 || node->data.pipe == 0) return -1;
 
     /* Add the node to process fileDescriptor list */
-    // addFd(node->data.fd) // TODO: Agregar el nodo a la lista del PROCESO
+    add_process_fd(node->data.fd);
 
     return node->data.fd;
 }
@@ -158,7 +163,7 @@ void close_pipe(int fd) {
     }
 
     /* Remove the node from process fileDescriptor list */
-    // removeFd(fd) // TODO: SACAR el nodo de la lista del PROCESO
+    remove_process_fd(fd);
 }
 
 /* Prints all Pipes */
@@ -229,13 +234,6 @@ static nodeFd * add_fd_list(char* name) {
     }
     /* Pipes are flagged outside */
     newFd->data.pipe = 0;
-    /* Malloc space for buffer */
-    newFd->data.buffer = (char *) malloc(BUFFER_SIZE);
-    if (newFd->data.buffer == 0) { // No more Memory
-        free(newFd->data.name);
-        free(newFd);
-        return 0;
-    }
 
     /* Initialize indexes */
     newFd->data.count = 0;

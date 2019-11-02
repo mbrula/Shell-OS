@@ -17,8 +17,7 @@ typedef struct {
     char * name;
     int fd;
     int pipe;
-    // char buffer[BUFFER_SIZE];
-    char * buffer;
+    char buffer[BUFFER_SIZE];
 
     /* Index variables */
     int count;

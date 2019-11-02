@@ -138,8 +138,8 @@ void printfFd(uint64_t fd, char * str, ...) {
 }
 
 char getchar() {
-    char character = 0;
-    while( character == 0) syscall(READ_ID, STDIN, (uint64_t) &character, 1, 0, 0, 0);
+    char character;
+    syscall(READ_ID, STDIN, (uint64_t) &character, 1, 0, 0, 0);
     return character;
 }
 
@@ -166,16 +166,16 @@ int gets(char * string, uint64_t size) {
 }
 
 char getcharFd(uint64_t fd) {
-    char character = 0; // TODO fix dis when fd
-    while(character == 0) syscall(READ_ID, fd, (uint64_t) &character, 1, 0, 0, 0);
+    char character; // TODO fix dis when fd
+    syscall(READ_ID, STDIN, (uint64_t) &character, 1, 0, 0, 0);
     return character;
 }
 
-/* Reads size bytes (or until Enter) from fileDescriptor and saves them in string. WONT PRINT WHILE READING */
+/* Reads size bytes (or until Enter or EOF) from fileDescriptor and saves them in string. WONT PRINT WHILE READING */
 int getsFd(char * string, uint64_t size, uint64_t fd) {
     uint64_t index = 0;
     uint8_t car;
-    while (index < size - 1 && (car = getcharFd(fd)) != '\n') {
+    while (index < size - 1 && (car = getcharFd(fd)) != '\n' && car >= 0) {
         if (car == '\b') {
             if (index > 0) {
                 index--;
@@ -295,8 +295,15 @@ uint64_t fork(void * entryPoint, char * name) {
 
 /* Create a new process based on its name */
 uint64_t newProcess(const char * name, uint64_t argc, char * argv[], uint64_t ground, uint64_t inFd, uint64_t outFd) {
+    if (inFd > 9999 || outFd > 9999) return 0;
+    char auxBuf[10];
+    itoa(inFd, auxBuf, 10);
+    int len = strlen(auxBuf);
+    auxBuf[len++] = ' ';
+    auxBuf[len] = 0;
+    itoa(outFd, auxBuf + len, 10);
     if (ground == FOREGROUND || ground == BACKGROUND)
-        return syscall(NEW_PROC_ID, (uint64_t) name, argc, (uint64_t) argv, ground, inFd, outFd);
+        return syscall(NEW_PROC_ID, (uint64_t) name, argc, (uint64_t) argv, ground, (uint64_t) auxBuf, 0);
     return 0;
 }
 

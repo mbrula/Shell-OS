@@ -16,8 +16,11 @@ void (* command_functions[]) (int argc, char * argv[], int ground, int inFd, int
                                             inv_op_cmd, exit_cmd, mem_cmd, ps_cmd, kill_cmd, block_cmd, nice_cmd,
                                             loop_cmd, cat_cmd, wc_cmd, filter_cmd, sem_cmd, pipe_cmd, phylo_cmd, test_cmd};
 
+/* Get command index from string input and save cursor in parameter */
 static int getCommandIndex(char * input, int * cursor);
-int pipeNumber = 0;
+
+/* Actual number for pipes */
+static int pipeNumber = 0;
 
 // MAX_LENGTH esta en clib.h
 
@@ -67,6 +70,9 @@ int getCommand(char * input){
         vec[j] = 0;
     }
 
+    char pipeName[20] = SEM_PIPE_NAME;
+    char pipeNumberBuf[5];
+
     int command = NO_CMD;
     int nextStdin = STDIN;
     int nextCmd = 0;
@@ -74,7 +80,7 @@ int getCommand(char * input){
     do {
         nextCmd = 0;
         /* Get the index of the written command if valid. Return if not valid */
-        command = getCommandIndex(input, &cursor);
+        command = getCommandIndex(input + cursor, &cursor);
         if (command == NO_CMD)
             return command;
 
@@ -85,8 +91,11 @@ int getCommand(char * input){
         /* Argument Loop */
         do {
             /* Get the next argument (Spaces split arguments) */
+            if (input[cursor] == ' ')
+                cursor++;
+
             haveArgs = strcpyUntilSpace(vec, input + cursor);
-            cursor += haveArgs + 1;
+            cursor += haveArgs;
             /* There are still arguments to process */
             if (haveArgs != 0) {
                 switch (vec[0]) {
@@ -98,15 +107,17 @@ int getCommand(char * input){
                     case '|':
                         /* Create a special named pipe and run the first command, fixing its STDOUT to the pipe. */
                         /* A new command is expected after the pipe */
-                        nextCmd = 1;
-                        char pipeName[20] = "/pipeCmd_";
-                        char auxBuf[5];
-                        itoa(pipeNumber++, auxBuf, 10);
-                        int aux = newPipe(strcat(pipeName, auxBuf));
-                        command_functions[command](argc, argv, FOREGROUND, nextStdin, aux);
+                        cursor++;
+                        strcpy(pipeName, SEM_PIPE_NAME);
+                        itoa(pipeNumber++, pipeNumberBuf, 10);
+                        int pipeFd = newPipe(strcat(pipeName, pipeNumberBuf));
+                        command_functions[command](argc, argv, FOREGROUND, nextStdin, pipeFd);
+                        pipeClose(pipeFd);
                         /* Change STDIN for next command to read from pipe. */
-                        nextStdin = aux;
+                        nextStdin = pipeFd;
+                        nextCmd = 1;
                         haveArgs = 0;
+                        argc = 0;
                         break;
                     default:
                         /* Save the argument if room's available */
@@ -130,7 +141,7 @@ static int getCommandIndex(char * input, int * cursor) {
     int i = 0;
     for (i = 0; i < command_count; i++) {
         if (strcmpUntilSpace(input, command_strings[i], cursor) == 0){
-            (*cursor)++;
+            // (*cursor)++;
             return i;
         }
         *cursor = initCursor;
@@ -165,18 +176,19 @@ void help_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
     putsFd("\nphylo ~ Ejecuta un proceso que implementa el problema de los filosofos comensales", outFd);
 
     putsFd("\nexit ~ Termina la ejecucion", outFd);
+    putsFd("\n", outFd);
 }
 
 /* Date Built-in Command - Shows date */
 void date_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
     char date[11];
-    printfFd(outFd, "\nHoy es %s", getDate(date));
+    printfFd(outFd, "\nHoy es %s\n", getDate(date));
 }
 
 /* Time Built-in Command - Shows time */
 void time_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
     char time[9];
-    printfFd(outFd, "\nSon las %s", getTime(time));
+    printfFd(outFd, "\nSon las %s\n", getTime(time));
 }
 
 /* Sleep Command - Creates a process that stays blocked n seconds */

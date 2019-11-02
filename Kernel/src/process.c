@@ -11,7 +11,10 @@
 #include <process.h>
 
 /* Static auxiliary functions */
+/* Free the parent process if required */
 static void free_parent(process p);
+/* Add filedescriptor to process list with Alias when create */
+static fdNode * add_process_alias(int oldFd, int newFd);
 
 /* Static count of the pids given */
 static uint64_t c_pid = 0;
@@ -56,18 +59,20 @@ process create_process(void * entryPoint, char * name, level context, uint64_t a
     data.stack = processStack;
     data.res = NONE;
     data.mutex = 0;
+    data.firstFd = add_process_alias(0, inAlias);
+    if (data.firstFd != 0) data.firstFd->next = add_process_alias(1, outAlias);
 
     return data;
 }
 
 /* Frees all the resources used by the process */
 static void free_resources(process p) {
-    // fdPointer * aux = p.first; TODO free also fdlist
-    // while (aux != 0){
-    //     fdPointer * aux2 = aux;
-    //     aux = aux->next;
-    //     free(aux2);
-    // }  
+    fdNode * iterator = p.firstFd;
+    while (iterator != 0){
+        fdNode * prev = iterator;
+        iterator = iterator->next;
+        free(prev);
+    }  
     switch (p.res) {
         case SEM: deallocate_mutex(p.mutex, p.pid);
         case TIME: remove_node_T(p.pid);
@@ -82,7 +87,7 @@ void remove(process p) {
     free(p.name);
 }
 
-// ToDo: Ver que no puedan killear al phylo??
+// TODO: Ver que no puedan killear al phylo??
 /* If a valid process, kill (used when ctrl + C) */
 void sig_int() {
     if (get_pid() > 1) kill_current();
@@ -103,8 +108,108 @@ void print_process_stack(process p) {
     print("\n-----------------------\n");
 }
 
+// TODO: Que no puedan matar al PHYLO??
 /* Set parent to ready if process is running on foreground */
 static void free_parent(process p) {
     if (p.ppid >= 1 && p.context == FORE)
         set_state(p.ppid, READY);
+}
+
+// TODO: CHECK current node (no cambia para el final, no?)
+/* Add new filedescriptor to process list */
+fdNode * add_process_fd(int fd) {
+    /* Create aux process from current to modify fd List */
+    nodeScheduler * current = get_current();
+    if (current == 0) return 0;
+    process p = current->process;
+
+    /* Check if fd already exists in process list */
+    fdNode * iterator = p.firstFd;
+    fdNode * prev = iterator;
+    while (iterator != 0) {
+        if (iterator->fd == fd)
+            return 0;
+        prev = iterator;
+        iterator = iterator->next;
+    }
+
+    /* Node doesn't exist, create node */
+    fdNode * node = (fdNode *) malloc(sizeof(fdNode));
+    if (node == 0) return 0; // No more memory
+    node->fd = fd;
+    node->alias = fd;
+    node->next = 0;
+
+    /* Insert node in process list */
+    if (p.firstFd == 0)
+        p.firstFd = node;
+    else
+        prev->next = node;
+    
+    /* Update node from scheduler */
+    current->process = p;
+
+    return node;
+}
+
+/* Remove a filedescriptor from process list */
+void remove_process_fd(int fd) {
+    /* Create aux process from current to modify fd List */
+    nodeScheduler * current = get_current();
+    if (current == 0) return;
+    process p = current->process;
+    if (p.firstFd == 0) return;
+
+    /* Check if fd already exists in process list */
+    fdNode * iterator = p.firstFd;
+    fdNode * prev = iterator;
+    while (iterator != 0) {
+        if (iterator->fd == fd) {
+            if (iterator == p.firstFd) {
+                /* First node */
+                p.firstFd = p.firstFd->next;
+                free(iterator);
+            } else {
+                /* Intermediate node */
+                prev->next = iterator->next;
+                free(iterator);
+            }
+            break;
+        }
+        prev = iterator;
+        iterator = iterator->next;
+    }
+
+    /* Update node from scheduler */
+    get_current()->process = p;
+}
+
+/* Return realFd (Alias) fro the current process or -1 if not listed */
+int get_process_alias(int fd) {
+    nodeScheduler * current = get_current();
+    if (current == 0) return -1;
+    process p = current->process;
+
+    /* Search for fd in process list */
+    fdNode * iterator = p.firstFd;
+    while (iterator != 0) {
+        if (iterator->fd == fd)
+            return iterator->alias;
+        iterator = iterator->next;
+    }
+    return -1;
+}
+
+/* Add filedescriptor to process list with Alias when create */
+static fdNode * add_process_alias(int oldFd, int newFd) {
+    /* Create fdNode */
+    fdNode * node = (fdNode *) malloc(sizeof(fdNode));
+    if (node == 0) return 0;
+
+    /* Set node properties */
+    node->fd = oldFd;
+    node->alias = newFd;
+    node->next = 0;
+
+    return node;
 }
