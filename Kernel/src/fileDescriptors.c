@@ -252,7 +252,7 @@ static nodeFd * add_fd_list(char* name) {
     /* Create new mutexes for syncronization */
     newFd->data.mutRead = new_mutex(name, 0); // Reading starts unblocked
     
-    char mutName[stringlen(name) + 1], numAux[]="2", writeAux[]="W";
+    char mutName[stringlen(name) + 3], numAux[]="2", writeAux[]="W";
     stringcp(mutName, name);
     stringcat(mutName, numAux);
     newFd->data.mutCant = new_mutex(mutName, 1); // ReadCant starts blocked

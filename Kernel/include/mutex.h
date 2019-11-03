@@ -1,5 +1,5 @@
 /***************************************************
-                    binarySem.h
+                    mutex.h
 ****************************************************/
 
 #ifndef _BINARY_SEM_H_
@@ -19,10 +19,10 @@ typedef struct mutex_data {
     waitNodeMut * last;
     uint64_t init;
     uint64_t pidAquired;
-} mutex;
+} mutexD;
 
 typedef struct mutex_node {
-    mutex mutex;
+    mutexD mutex;
     struct mutex_node * next;
 } mutNode;
 

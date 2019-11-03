@@ -2,7 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <syscalls.h>
 #include <stdint.h>
-#include <mutex.h>
+#include <sem.h>
 
 #define SYSCALL_COUNT	29
 
@@ -181,17 +181,17 @@ uint64_t syscall_25 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 }
 
 uint64_t syscall_26 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-	sem_close_handler((mutNode *) rdi);
+	sem_close_handler((semNode *) rdi);
 	return 0;
 }
 
 uint64_t syscall_27 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-	sem_wait_handler((mutNode *) rdi);
+	sem_wait_handler((semNode *) rdi);
 	return 0;
 }
 
 uint64_t syscall_28 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-	sem_post_handler((mutNode *) rdi);
+	sem_post_handler((semNode *) rdi);
 	return 0;
 }
 

@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <lib.h>
 #include <process.h>
-#include <mutex.h>
+#include <sem.h>
 
 /* Dispatcher for software interrupts */
 uint64_t handleSyscall(uint64_t sirq, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
@@ -38,9 +38,9 @@ void pipe_close_handler(int fd);
 void pipe_status_handler();
 uint64_t new_sem_handler(char * name, uint64_t init);
 uint64_t sem_open_handler(char * name);
-void sem_close_handler(mutNode * sem);
-void sem_wait_handler(mutNode * sem);
-void sem_post_handler(mutNode * sem);
+void sem_close_handler(semNode * sem);
+void sem_wait_handler(semNode * sem);
+void sem_post_handler(semNode * sem);
 void sem_status_handler();
 
 #endif /* _SYSCALLS_H_ */
