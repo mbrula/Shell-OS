@@ -31,7 +31,9 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "utility": "cpp",
-        "pixelmap.h": "c"
+        "pixelmap.h": "c",
+        "semaphore.h": "c",
+        "lib.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

@@ -8,7 +8,7 @@
 uint64_t countParaPrueba = 0;
 
 int main(int argc, char const * argv[]) {
-	uint64_t mutex = newSem("mutexSync", 0);
+	uint64_t mutex = newSem("mutexSync", 1);
 	if (mutex == 0) return 1;
 
 	puts("\n--PROCESO PADRE--\n");

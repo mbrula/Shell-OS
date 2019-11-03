@@ -24,15 +24,15 @@ mutNode * open_mutex(char * name) {
     return 0;    
 }
 
-/* Create a new mutex */
+/* Create a new mutex. INIT 0 means UNLOCKED, INIT 1 means LOCKED */
 mutNode * new_mutex(char * name, uint8_t init) {
     /* Check if the mutex already exists */
     if (open_mutex(name) != 0) return 0; // TODO: DEVOLVEMOS EL mutNode * existente???
 
     /* Create mutex */
-    mutex mutex;
+    mutexD mutex;
     mutex.name = (char *) malloc(stringlen(name) + 1);
-    if (mutex.name == 0) return 0; // No more memory
+    if (mutex.name == 0) return 0; // No more Memory
     stringcp(mutex.name, name);
     mutex.blocked = 0;
     mutex.last = 0;
@@ -165,13 +165,13 @@ void deallocate_mutex(mutNode * mutex, uint64_t pid) {
 void show_all_mutex() {
     /* Check if list is empty */
     if (first == 0) {
-        print("\nThere are no Semaphores created");
+        print("\nThere are no Mutexes created");
         return;
     }
 
     /* Print each mutex's state */
     mutNode * iterator = first;
-    print("\nName\t\tState\t\t\tBlocked Processes\n");
+    print("\nName\t\t\tState\t\t\tBlocked Processes\n");
     while (iterator != 0) {
         print(iterator->mutex.name); print("\t\t"); 
         print((iterator->mutex.lock) ? "Locked" : "Unlocked"); print("\t\t");
@@ -181,6 +181,7 @@ void show_all_mutex() {
     }
 }
 
+/* Check if a mutex pointer belongs to the mutex list */
 static int search_mutex(mutNode * mutex) {
     mutNode * iterator = first;
     while (iterator != 0) {

@@ -13,6 +13,7 @@
 #include <scheduler.h>
 
 #include <mutex.h>
+#include <sem.h>
 #include <interrupts.h>
 #include <fileDescriptors.h>
 #include <strings.h>
@@ -178,25 +179,28 @@ void pipe_status_handler(){
 
 // TODO: Change to Semaphore when implemented
 uint64_t new_sem_handler(char * name, uint64_t init){
-    return (uint64_t) new_mutex(name, init);
+    return (uint64_t) new_sem(name, init);
 }
 
 uint64_t sem_open_handler(char * name) {
-    return (uint64_t) open_mutex(name);
+    return (uint64_t) open_sem(name);
 }
 
-void sem_close_handler(mutNode * sem){
-    close_mutex(sem);
+void sem_close_handler(semNode * sem){
+    close_sem(sem);
 }
 
-void sem_wait_handler(mutNode * sem){
-    wait_mutex(sem);
+void sem_wait_handler(semNode * sem){
+    wait_sem(sem);
 }
 
-void sem_post_handler(mutNode * sem){
-    post_mutex(sem);
+void sem_post_handler(semNode * sem){
+    post_sem(sem);
 }
 
 void sem_status_handler(){
+    print("\n\t\t\t---MUTEXES---\n");
     show_all_mutex();
+    print("\n\t\t---SEMAPHORES---\n");
+    show_all_sem();
 }
