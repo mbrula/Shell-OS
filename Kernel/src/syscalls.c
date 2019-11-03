@@ -4,7 +4,7 @@
 #include <keyboard.h>
 #include <timelib.h>
 #include <console.h>
-#include <naiveConsole.h>
+// #include <naiveConsole.h>
 #include <sound.h>
 #include <memoryManager.h>
 #include <moduleAddresses.h>
@@ -14,30 +14,18 @@
 
 #include <mutex.h>
 #include <interrupts.h>
+#include <fileDescriptors.h>
+#include <strings.h>
 
 /* Located on loader.asm */
 extern void hang();
 
-void read_handler(uint64_t fd, char * buff, uint64_t count) {
-    // File descriptor doesn't matter
-    for (int i = 0; i < count; i ++)
-        buff[i] = read_character();
+void read_handler(uint64_t fd, char * buffer, uint64_t count) {
+    read(fd, buffer, count);
 }
 
-void write_handler(uint64_t fd, const char * buff, uint64_t count) {
-    switch (fd) {
-        case STDIN:
-        case STDOUT:
-            print_N(buff, count);
-            //ncPrint(buff);
-            break;
-        case STDERR:
-            printError_N(buff, count);
-            //ncPrintError(buff);
-            break;
-        default:
-            break;
-    }
+void write_handler(uint64_t fd, const char * buffer, uint64_t count) {
+    write(fd, buffer, count);
 }
 
 uint64_t time_handler() {
@@ -58,10 +46,18 @@ void sleep_handler(uint64_t millis){
     sleep(millis);
 }
 
-void beep_handler(uint16_t frequency, uint64_t millis) {
-    play_sound(frequency);
-    sleep_handler(millis);
-    no_sound();
+void beep_handler(uint16_t frequency, uint64_t state) {
+    switch (state)
+    {
+        case 1: // PLAY
+            play_sound(frequency);
+            break;
+        case 0: // STOP
+            no_sound();
+            break;
+        default:
+            break;
+    }
 }
 
 void exit_handler() {
@@ -116,9 +112,19 @@ static void * get_module_address(char * name) {
     return 0;
 }
 
-uint64_t create_handler(char * name, uint64_t argc, char ** argv, level context, uint64_t inFd, uint64_t outFd) {
+uint64_t create_handler(char * name, uint64_t argc, char ** argv, level context, char * fds) {
+    int inFd = 0, outFd = 1, cursor = 0;
+    char aux[5];
+
+    stringcp_until_space(aux, fds);
+    inFd = atoi(aux, &cursor);
+    stringcp_until_space(aux, fds + cursor + 1);
+    outFd = atoi(aux, &cursor);
+    
+    /* Search for process name in available processes */
     void * entryPoint = get_module_address(name);
-    if (entryPoint == 0) return 0;
+    if (entryPoint == 0 || inFd < 0 || outFd < 0)
+        return 0;
     return add_process(entryPoint, name, context, argc, argv, inFd, outFd);
 }
 
@@ -155,21 +161,19 @@ void halt_handler() {
 }
 
 int new_pipe_handler(char * name) {
-    // return newPipe(name);
-    return 0;
+    return new_pipe(name);
 }
 
 int pipe_open_handler(char * name) {
-    // return openPipe(name);
-    return 0;
+    return open_pipe(name);
 }
 
 void pipe_close_handler(int fd) {
-    // closePipe(fd);
+    close_pipe(fd);
 }
 
 void pipe_status_handler(){
-    // showAllPipes();
+    show_all_pipes();
 }
 
 // TODO: Change to Semaphore when implemented

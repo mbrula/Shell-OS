@@ -21,7 +21,16 @@
         "algorithm": "c",
         "processa.h": "c",
         "stdint.h": "c",
-        "mutex.h": "c"
+        "mutex.h": "c",
+        "filedescriptors.h": "c",
+        "optional": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "system_error": "cpp",
+        "array": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp"
     },
     "C_Cpp.dimInactiveRegions": false
 }

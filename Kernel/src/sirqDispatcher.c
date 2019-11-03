@@ -125,7 +125,7 @@ uint64_t syscall_12 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 /* -----------------------------------------------------------------*/
 
 uint64_t syscall_13 (uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {
-	return create_handler((char *)rdi, rsi, (char **) rdx, rcx, r8, r9);
+	return create_handler((char *)rdi, rsi, (char **) rdx, rcx, (char *) r8);
 }
 
 uint64_t syscall_14(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) {

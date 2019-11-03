@@ -17,6 +17,8 @@
 #define BEEP_FREQ       400
 #define DOOR_FREQ       600
 
+#define SEM_PIPE_NAME "/pipeCmd_"
+
 void initShell();
 void initScreen();
 int getCommand(char * input);

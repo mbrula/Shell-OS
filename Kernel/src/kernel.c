@@ -11,6 +11,7 @@
 #include <memoryManager.h>
 #include <process.h>
 #include <scheduler.h>
+#include <fileDescriptors.h>
 //  <timelib.h>
 
 extern uint8_t text;
@@ -69,6 +70,7 @@ void * initializeKernelBinary() {
 	/* Creates memory manager at the end of the modules loaded */
 	create_manager(startOfMem, totalBytes);
 	init_scheduler();
+	init_fds();
 	init_video_driver();
   	init_console();
 	
