@@ -106,6 +106,7 @@ static void add_node_T(uint64_t pid, uint64_t time) {
     firstT = node;
 }
 
+// TODO: ESTA FUNCION NO SE USA NUNCA. VUELA o se QUEDA?
 /* Auxiliary fucntion to print nodes */
 static void print_list_time() {
     print("\nList of sleep nodes:\n");
