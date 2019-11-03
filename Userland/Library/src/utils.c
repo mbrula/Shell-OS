@@ -27,9 +27,9 @@ char* reverse(char *buffer, int i, int j) {
 	return buffer;
 }
 
-int atoi(const char* buffer) {
+uint64_t atoi(const char* buffer) {
 	int i = 0;
-	int result = 0;
+	uint64_t result = 0;
 	int len = strlen(buffer);
 
 	while(buffer[i] != 0 && isNumber(buffer[i])){

@@ -10,9 +10,9 @@ int main(int argc, char const * argv[]) {
 	uint64_t * countParaPrueba = (uint64_t *) atoi(argv[0]);
 
 	int pid = getPid();
-	printf("\n--PROCESO B # %d--\n", pid);
+	printf("\n--PROCESO HIJO # %d--\n", pid);
 
-	uint64_t mutex = semOpen("mutex");
+	uint64_t mutex = semOpen("mutexSync");
 	if (mutex == 0) return 1;
 
 	semWait(mutex);
@@ -25,7 +25,7 @@ int main(int argc, char const * argv[]) {
 	}
 	semPost(mutex);
 	semClose(mutex);
-	printf("\nCOUNT: %d", *countParaPrueba);
+	printf("\nCOUNT: %d para PID %d", *countParaPrueba, pid);
 
 	return 0;
 }

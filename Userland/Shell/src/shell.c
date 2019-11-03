@@ -8,13 +8,13 @@
 static char * command_strings[] = {"help", "date", 
                                         "time", "sleep", "clear", "beep", "door", "div_zero", 
                                         "inv_op", "exit", "mem", "ps", "kill", "block", "nice", 
-                                        "loop", "cat", "wc", "filter", "sem", "pipe", "phylo", "test"};
+                                        "loop", "cat", "wc", "filter", "sem", "pipe", "phylo", "sync"};
 static int command_count = 23;
 /* Command functions associated with command inputs */
 void (* command_functions[]) (int argc, char * argv[], int ground, int inFd, int outFd) = {help_cmd, date_cmd, 
                                             time_cmd, sleep_cmd, clear_cmd, beep_cmd, door_cmd, div_zero_cmd, 
                                             inv_op_cmd, exit_cmd, mem_cmd, ps_cmd, kill_cmd, block_cmd, nice_cmd,
-                                            loop_cmd, cat_cmd, wc_cmd, filter_cmd, sem_cmd, pipe_cmd, phylo_cmd, test_cmd};
+                                            loop_cmd, cat_cmd, wc_cmd, filter_cmd, sem_cmd, pipe_cmd, phylo_cmd, sync_cmd};
 
 /* Get command index from string input and save cursor in parameter */
 static int getCommandIndex(char * input, int * cursor);
@@ -173,6 +173,7 @@ void help_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
     putsFd("\nsem ~ Imprime la lista de todos los semaforos con sus propiedades", outFd);
     putsFd("\npipe ~ Imprime la lista de todos los pipes con sus propiedades", outFd);
     putsFd("\nphylo ~ Ejecuta un proceso que implementa el problema de los filosofos comensales", outFd);
+    putsFd("\nsync ~ Ejecuta un proceso que crea N procesos hijos que modifican una misma variable", outFd);
 
     putsFd("\nexit ~ Termina la ejecucion", outFd);
     putsFd("\n", outFd);
@@ -262,7 +263,7 @@ void ps_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
 
 /* Kill Built-in Command - Kills the process with PID entered via arguments */
 void kill_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
-    int pid;
+    uint64_t pid;
     if (argc < 1 || (pid = atoi(argv[0])) < 0) {
         puts("\nIngreso invalido. Debe ingresar el ID del proceso que desea eliminar como primer argumento.");
     } else {
@@ -278,7 +279,7 @@ void kill_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
 
 /* Block Built-in Command - Changes state between blocked and ready of the process with PID entered via arguments */
 void block_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
-    int pid;
+    uint64_t pid;
     if (argc < 1 || (pid = atoi(argv[0])) < 0) {
         puts("\nIngreso invalido. Debe ingresar el ID del proceso que desea cambiar de estado como primer argumento.");
     } else {
@@ -290,7 +291,7 @@ void block_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
 
 /* Nice Built-in Command - Changes priority of the process with PID entered via arguments */
 void nice_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
-    int pid, priority;
+    uint64_t pid, priority;
     if (argc < 2 || (pid = atoi(argv[0])) < 0 || (priority = atoi(argv[1])) < 0) {
         puts("\nIngreso invalido. Debe ingresar el ID del proceso que desea cambiar de estado como primer argumento y la nueva prioridad del \nproceso como segundo argumento.");
     } else {
@@ -373,11 +374,9 @@ void phylo_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
     }
 }
 
-void test_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
-    if (ground == BACKGROUND) {
-        puts("\nNo puedes correr este comando en background! Requiere ingreso por STDIN.");
-    } else {
-        newLine();
-        newProcess("PROCESS_A", argc, argv, ground, inFd, outFd);
-    }
+void sync_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
+    newLine();
+    int pid = newProcess("PROCESS_A", argc, argv, ground, inFd, outFd);
+    if (ground == BACKGROUND)
+        printf("\nCreate %s. PID = %d", (pid == 0) ? "unsuccesfull":"successfull", pid);
 }

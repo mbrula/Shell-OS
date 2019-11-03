@@ -51,6 +51,6 @@ void sem_cmd(int argc, char * argv[], int ground, int inFd, int outFd);
 void pipe_cmd(int argc, char * argv[], int ground, int inFd, int outFd);
 void phylo_cmd(int argc, char * argv[], int ground, int inFd, int outFd);
 
-void test_cmd(int argc, char * argv[], int ground, int inFd, int outFd);
+void sync_cmd(int argc, char * argv[], int ground, int inFd, int outFd);
 
 #endif /* SHELL_H_ */

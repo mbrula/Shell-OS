@@ -5,15 +5,13 @@
 
 #define N 	10
 
-uint64_t countParaPrueba = 0;
-// extern uint64_t goParaPrueba;
+int countParaPrueba = 0;
 
 int main(int argc, char const * argv[]) {
-	uint64_t sons[N];
-	uint64_t mutex = newSem("mutex", 0);
+	uint64_t mutex = newSem("mutexSync", 0);
 	if (mutex == 0) return 1;
 
-	puts("\n--PROCESO A--\n");
+	puts("\n--PROCESO PADRE--\n");
 
 	sleep(1000);
 
@@ -24,13 +22,13 @@ int main(int argc, char const * argv[]) {
 
 	int i = 0;
 	for (i = 0; i < N; i++) {
-		sons[i] = newProcess("PROCESS_B", argc2, argv2, BACKGROUND, 0, 1);
+		newProcess("PROCESS_B", argc2, argv2, BACKGROUND, 0, 1);
 	}
 
 	ps();
 
 	sleep(5000);
-	printf("\n\n%d\n\n", countParaPrueba);
+	printf("\nCuenta Final: %d\n", countParaPrueba);
 	semClose(mutex);
 	
 	return 0;
