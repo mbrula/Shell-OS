@@ -25,7 +25,7 @@ void init_fds() {
     add_fd_list("stderr");
 }
 
-// TODO: Check if mutCant has to be a COUNT SEMAPHORE IF MORE THAN ONE EOF IS SENT or sth like that
+// TODO: Check if mutCant has to be a COUNT SEMAPHORE IF MORE THAN ONE EOF IS SENT or sth like that. TE JODES??
 /* Write on buffer given fd number */
 void write(int fd, const char * buffer, int count) {
     /* If no characters were sent, return */

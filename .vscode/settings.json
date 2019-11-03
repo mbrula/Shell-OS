@@ -35,7 +35,9 @@
         "semaphore.h": "c",
         "lib.h": "c",
         "sem.h": "c",
-        "timelib.h": "c"
+        "timelib.h": "c",
+        "utils.h": "c",
+        "stdarg.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }
