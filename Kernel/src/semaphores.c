@@ -24,7 +24,8 @@ semNode * open_sem(char * name) {
 /* Create a new semaphore */
 semNode * new_sem(char * name, uint8_t init) {
     /* Check if the sem already exists */
-    if (open_sem(name) != 0) return 0; // TODO: DEVOLVEMOS EL semNode * existente???
+    semNode * prevSem = open_sem(name);
+    if (prevSem != 0) return prevSem;
 
     /* Create semaphore */
     semaphore sem;

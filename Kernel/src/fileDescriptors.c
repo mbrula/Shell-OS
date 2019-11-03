@@ -123,7 +123,8 @@ void read(int fd, char * buffer, int count) {
 /* Create new named Pipe */
 int new_pipe(char * name) {
     /* Check if fileDescriptor already exists */
-    if (search_name(name) != 0) return -1;  // TODO: DEVOLVEMOS EL fd existente???
+    nodeFd * prevFd = search_name(name);
+    if (prevFd != 0) return prevFd->data.fd;  // TODO: PROBAR QUE PASA SI YA EXISTE
 
     /* Add node to fileDescriptor list */
     nodeFd * node = add_fd_list(name);

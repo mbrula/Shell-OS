@@ -27,7 +27,8 @@ mutNode * open_mutex(char * name) {
 /* Create a new mutex. INIT 0 means UNLOCKED, INIT 1 means LOCKED */
 mutNode * new_mutex(char * name, uint8_t init) {
     /* Check if the mutex already exists */
-    if (open_mutex(name) != 0) return 0; // TODO: DEVOLVEMOS EL mutNode * existente???
+    mutNode * prevMutex = open_mutex(name);
+    if (prevMutex != 0) return prevMutex;
 
     /* Create mutex */
     mutexD mutex;
