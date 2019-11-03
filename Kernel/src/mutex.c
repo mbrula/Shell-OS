@@ -122,21 +122,21 @@ void close_mutex(mutNode * mutex) {
     deallocate_mutex(mutex, get_pid());
 }
 
-// TODO: Test deallocate with Ctrl C or other means
+// TODO: Test deallocate
 /* Deallocate system resources aquired by process for mutex */
 void deallocate_mutex(mutNode * mutex, uint64_t pid) {
     if (!search_mutex(mutex) || pid == 0) return;
 
-    /* Check if mutex is locked by the PID process */
-    if (mutex->mutex.pidAquired == pid) {
-        print("\n\nSoy yo el que lo bloquea a %s", mutex->mutex.name);
-        /* If mutex init was 0, restore post mutex */
-        if (mutex->mutex.init == 0){
-            print("\n\nHago un post");
-            post_mutex(mutex);
-        }
-        return;
+    /* Post every mutex aquired by PID process if their init was unlocked */
+    mutNode * pidIt = first;
+    while (pidIt != 0) {
+        if (pidIt->mutex.pidAquired == pid && pidIt->mutex.init == 0)
+            post_mutex(pidIt);
+        pidIt = pidIt->next;
     }
+
+    /* Check if mutex is locked by the PID process */
+    if (mutex->mutex.pidAquired == pid) return;
 
     waitNodeMut * iterator = mutex->mutex.blocked;
     waitNodeMut * prev = 0;
