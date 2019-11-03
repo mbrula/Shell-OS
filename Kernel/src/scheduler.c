@@ -9,6 +9,9 @@
 
 #include <scheduler.h>
 
+/* Located on loader.asm */
+extern void hang();
+
 /* Static auxiliary functions */
 static nodeScheduler * search(uint64_t pid);
 static nodeScheduler * search_prev(uint64_t pid);
@@ -22,7 +25,6 @@ static nodeScheduler * pHalt;
 
 /* Synchronization variable for different stages */
 static schedulerState stage;
-
 
 /* Gives control to processes on list   */
 uint64_t scheduler(uint64_t sp) {
@@ -133,7 +135,8 @@ uint64_t kill(uint64_t pid) {
         free(current);
         current = 0;
         stage = STARTHALT;
-        // halt(); // TODO, is this needed? No need to kill cpu
+        print("\nNo more proceses to run");
+        hang(); // TODO, is this needed? No need to kill cpu
         return pid;
     }
 

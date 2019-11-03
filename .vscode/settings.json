@@ -34,7 +34,8 @@
         "pixelmap.h": "c",
         "semaphore.h": "c",
         "lib.h": "c",
-        "sem.h": "c"
+        "sem.h": "c",
+        "timelib.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

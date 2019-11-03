@@ -13,7 +13,7 @@ static void not_imp();
 RegisterSet regState;
 ExceptionStackFrame excState;
 
-extern void goToUserland();
+extern void kill_current();
 
 void (* excHandlers[]) () = {zero_division, not_imp, not_imp, not_imp, not_imp, not_imp, invalid_opcode};
 
@@ -41,11 +41,11 @@ void exceptionDispatcher(int exc) {
 	printError("RIP: %d\n", excState.rip);
     printError("RAX: %d\nRBX: %d\nRCX: %d\nRDX: %d\nRDI: %d\nRSI: %d\nRBP: %d\nRSP: %d\nR8: %d\nR9: %d\n", 
 		regState.rax, regState.rbx, regState.rcx, regState.rdx, regState.rdi, regState.rsi, regState.rbp, regState.rsp, regState.r8, regState.r9);
-	print("\n\nRebooting to userland");
+	print("\n\nKilling current Process");
 
     _sti();
     sleep(2000);
-	goToUserland();
+	kill_current();
 }
 
 /* Gets all registers */
