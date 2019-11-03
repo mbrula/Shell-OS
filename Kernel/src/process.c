@@ -108,7 +108,6 @@ void print_process_stack(process p) {
     print("\n-----------------------\n");
 }
 
-// TODO: Que no puedan matar al PHYLO??
 /* Set parent to ready if process is running on foreground */
 static void free_parent(process p) {
     if (p.ppid >= 1 && p.context == FORE)

@@ -177,7 +177,6 @@ void pipe_status_handler(){
     show_all_pipes();
 }
 
-// TODO: Change to Semaphore when implemented
 uint64_t new_sem_handler(char * name, uint64_t init){
     return (uint64_t) new_sem(name, init);
 }
