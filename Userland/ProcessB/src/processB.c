@@ -7,7 +7,8 @@
 
 int main(int argc, char const * argv[]) {
 	if (argc < 1) return 1;
-	uint64_t * countParaPrueba = (uint64_t *) atoi(argv[0]);
+	uint64_t aux = atoi(argv[0]);
+	int * countParaPrueba = (int *) aux;
 
 	int pid = getPid();
 	printf("\n--PROCESO HIJO # %d--\n", pid);
@@ -18,7 +19,7 @@ int main(int argc, char const * argv[]) {
 	semWait(mutex);
 	int i = 0, j = 0;
 	for (i = 0; i < M; i++){
-		uint64_t aux = *countParaPrueba;
+		int aux = *countParaPrueba;
 		while (j < 10000) j++;
 		*countParaPrueba = aux + 1;
 		j = 0;

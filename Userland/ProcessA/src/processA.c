@@ -5,7 +5,7 @@
 
 #define N 	10
 
-int countParaPrueba = 0;
+uint64_t countParaPrueba = 0;
 
 int main(int argc, char const * argv[]) {
 	uint64_t mutex = newSem("mutexSync", 0);
@@ -27,7 +27,8 @@ int main(int argc, char const * argv[]) {
 
 	ps();
 
-	sleep(5000);
+	puts("\n--PADRE ESPERANDO--\n");
+	sleep(3000);
 	printf("\nCuenta Final: %d\n", countParaPrueba);
 	semClose(mutex);
 	

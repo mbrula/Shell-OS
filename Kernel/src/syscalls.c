@@ -113,7 +113,7 @@ static void * get_module_address(char * name) {
 }
 
 uint64_t create_handler(char * name, uint64_t argc, char ** argv, level context, char * fds) {
-    int inFd = 0, outFd = 1, cursor = 0;
+    int inFd, outFd, cursor = 0;
     char aux[5];
 
     stringcp_until_space(aux, fds);

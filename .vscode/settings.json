@@ -30,7 +30,8 @@
         "array": "cpp",
         "tuple": "cpp",
         "type_traits": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "pixelmap.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

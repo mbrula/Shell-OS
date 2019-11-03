@@ -6,7 +6,7 @@
 int concat(char * to, const char * from);
 void swap(char *x, char *y);
 char* reverse(char *buffer, int i, int j);
-uint64_t atoi(const char* buffer);
+int atoi(const char* buffer);
 int pow(int base, int exponent);
 char* itoa(int value, char* buffer, int base);
 uint64_t strlen(const char * string);

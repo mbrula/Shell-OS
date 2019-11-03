@@ -263,7 +263,7 @@ void ps_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
 
 /* Kill Built-in Command - Kills the process with PID entered via arguments */
 void kill_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
-    uint64_t pid;
+    int pid;
     if (argc < 1 || (pid = atoi(argv[0])) < 0) {
         puts("\nIngreso invalido. Debe ingresar el ID del proceso que desea eliminar como primer argumento.");
     } else {
@@ -279,7 +279,7 @@ void kill_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
 
 /* Block Built-in Command - Changes state between blocked and ready of the process with PID entered via arguments */
 void block_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
-    uint64_t pid;
+    int pid;
     if (argc < 1 || (pid = atoi(argv[0])) < 0) {
         puts("\nIngreso invalido. Debe ingresar el ID del proceso que desea cambiar de estado como primer argumento.");
     } else {
@@ -291,7 +291,7 @@ void block_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
 
 /* Nice Built-in Command - Changes priority of the process with PID entered via arguments */
 void nice_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
-    uint64_t pid, priority;
+    int pid, priority;
     if (argc < 2 || (pid = atoi(argv[0])) < 0 || (priority = atoi(argv[1])) < 0) {
         puts("\nIngreso invalido. Debe ingresar el ID del proceso que desea cambiar de estado como primer argumento y la nueva prioridad del \nproceso como segundo argumento.");
     } else {
