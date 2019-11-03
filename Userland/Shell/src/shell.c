@@ -141,7 +141,6 @@ static int getCommandIndex(char * input, int * cursor) {
     int i = 0;
     for (i = 0; i < command_count; i++) {
         if (strcmpUntilSpace(input, command_strings[i], cursor) == 0){
-            // (*cursor)++;
             return i;
         }
         *cursor = initCursor;
@@ -155,7 +154,7 @@ void help_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
     putsFd("\nhelp ~ Muestra los comandos validos", outFd);
     putsFd("\ndate ~ Muestra la fecha actual", outFd);
     putsFd("\ntime ~ Muestra la hora actual", outFd);
-    putsFd("\nsleep ~ Frena el funcionamiento un numero de segundos a ingresar", outFd);
+    putsFd("\nsleep NUMBER ~ Frena el funcionamiento un numero de segundos a ingresar", outFd);
     putsFd("\nclear ~ Limpia la consola", outFd);
     putsFd("\nbeep ~ Emite un sonido", outFd);
     putsFd("\ndoor ~ Hay alguien en la puerta", outFd);
@@ -196,6 +195,7 @@ void sleep_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
     if (argc < 1 || atoi(argv[0]) < 0) {
         puts("\nIngreso invalido. Debe ingresar el numero de segundos que desea esperar como primer argumento.");
     } else {
+        newLine();
         int pid = newProcess("SLEEP", argc, argv, ground, inFd, outFd);
         if (ground == BACKGROUND)
             printf("\nCreate %s. PID = %d", (pid == 0) ? "unsuccesfull":"successfull", pid);
@@ -317,6 +317,7 @@ void nice_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
 
 /* Loop Command - Creates a process that prints a message and sleeps in an infinite loop */
 void loop_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {     
+    newLine();
     int pid = newProcess("LOOP", argc, argv, ground, inFd, outFd);
     if (ground == BACKGROUND)
         printf("\nCreate %s. PID = %d", (pid == 0) ? "unsuccesfull":"successfull", pid);
@@ -327,6 +328,7 @@ void cat_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
     if (ground == BACKGROUND) {
         puts("\nNo puedes correr este comando en background! Requiere ingreso por STDIN.");
     } else {
+        newLine();
         newProcess("CAT", argc, argv, ground, inFd, outFd);
     }
 }
@@ -336,6 +338,7 @@ void wc_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
     if (ground == BACKGROUND) {
         puts("\nNo puedes correr este comando en background! Requiere ingreso por STDIN.");
     } else {
+        newLine();
         newProcess("WC", argc, argv, ground, inFd, outFd);
     }
 }
@@ -345,6 +348,7 @@ void filter_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
     if (ground == BACKGROUND) {
         puts("\nNo puedes correr este comando en background! Requiere ingreso por STDIN.");
     } else {
+        newLine();
         newProcess("FILTER", argc, argv, ground, inFd, outFd);
     }
 }
@@ -364,6 +368,7 @@ void phylo_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
     if (ground == BACKGROUND) {
         puts("\nNo puedes correr este comando en background! Requiere ingreso por STDIN.");
     } else {
+        newLine();
         newProcess("PHYLO", argc, argv, ground, inFd, outFd);
     }
 }
@@ -372,6 +377,7 @@ void test_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
     if (ground == BACKGROUND) {
         puts("\nNo puedes correr este comando en background! Requiere ingreso por STDIN.");
     } else {
+        newLine();
         newProcess("PROCESS_A", argc, argv, ground, inFd, outFd);
     }
 }
