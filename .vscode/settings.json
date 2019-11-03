@@ -33,7 +33,8 @@
         "utility": "cpp",
         "pixelmap.h": "c",
         "semaphore.h": "c",
-        "lib.h": "c"
+        "lib.h": "c",
+        "sem.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }
