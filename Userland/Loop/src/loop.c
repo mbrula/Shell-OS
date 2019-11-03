@@ -6,7 +6,6 @@ int main(int argc, char const *argv[]) {
 	int pid = getPid();
 	while (1) {
 		printf("\n\n-- Hola! Soy Loop. Mi PID es %d --\n", pid);
-		sleep(300);
 	}
 	return 0;
 } 

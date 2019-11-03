@@ -303,13 +303,14 @@ void nice_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
         int ret = setPriority(pid, priority); // Devuelve 0 si sale bien, 1 si no encuentra pid, 2 si error en prioridad
         switch (ret)
         {
-            case 1:
+            case 0:
                 puts("\nPID Invalido.");
                 break;
-            case 2:
-                puts("\nPrioridad Invalida.");
-                break;
-            default: // case 0
+                // TODO: Revisar si esto de abajo no va mas
+            // case 2:
+            //     puts("\nPrioridad Invalida.");
+            //     break;
+            default: // case 1
                 puts("\nChange successfull");
                 break;
         }
