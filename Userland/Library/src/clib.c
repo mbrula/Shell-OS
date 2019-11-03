@@ -272,14 +272,9 @@ void free(void * ptr) {
     syscall(FREE_ID, (uint64_t) ptr, 0, 0, 0, 0, 0);
 }
 
-/* Print memory size, occupied memory and free memory (STDOUT) */
+/* Print memory size, occupied memory and free memory */
 void memStatus() {
-    syscall(STATUS_ID, STDOUT, 0, 0, 0, 0, 0);
-}
-
-/* Print memory size, occupied memory and free memory (outFd) */
-void memStatusFd(uint64_t outFd) {
-    syscall(STATUS_ID, outFd, 0, 0, 0, 0, 0);
+    syscall(STATUS_ID, 0, 0, 0, 0, 0, 0);
 }
 
 /* Print memory size, occupied memory and free memory (outFd) */
@@ -317,14 +312,9 @@ uint64_t getPid() {
     return syscall(PID_ID, 0, 0, 0, 0, 0, 0);
 }
 
-/* List all running processes (STDOUT) */
+/* List all running processes */
 void ps() {
-    syscall(PS_ID, STDOUT, 0, 0, 0, 0, 0);
-}
-
-/* List all running processes (outFd) */
-void psFd(uint64_t outFd) {
-    syscall(PS_ID, outFd, 0, 0, 0, 0, 0);
+    syscall(PS_ID, 0, 0, 0, 0, 0, 0);
 }
 
 /* Set process priority to n */
@@ -352,14 +342,9 @@ void pipeClose(int fd) {
     syscall(PIPE_CLOSE_ID, fd, 0, 0, 0, 0, 0);
 }
 
-/* List all pipes (STDOUT) */
+/* List all pipes */
 void pipeStatus() {
-    syscall(PIPE_STATUS_ID, STDOUT, 0, 0, 0, 0, 0);
-}
-
-/* List all pipes (outFd) */
-void pipeStatusFd(uint64_t outFd) {
-    syscall(PIPE_STATUS_ID, outFd, 0, 0, 0, 0, 0);
+    syscall(PIPE_STATUS_ID, 0, 0, 0, 0, 0, 0);
 }
 
 /* Create a new named semaphore */
@@ -387,12 +372,7 @@ void semPost(uint64_t sem) {
     syscall(SEM_POST_ID, sem, 0, 0, 0, 0, 0);
 }
 
-/* List all semaphores (STDOUT) */
+/* List all semaphores */
 void semStatus() {
-    syscall(SEM_STATUS_ID, STDOUT, 0, 0, 0, 0, 0);
-}
-
-/* List all semaphores (outFd) */
-void semStatusFd(uint64_t outFd) {
-    syscall(SEM_STATUS_ID, outFd, 0, 0, 0, 0, 0);
+    syscall(SEM_STATUS_ID, 0, 0, 0, 0, 0, 0);
 }

@@ -49,7 +49,6 @@ void drawPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b);
 void * malloc(uint32_t size);
 void free(void * ptr);
 void memStatus();
-void memStatusFd(uint64_t outFd);
 void memGetStatus(uint64_t * total, uint64_t * free, uint64_t * occupied);
 
 /* Processes functions */
@@ -58,7 +57,6 @@ uint64_t newProcess(const char * name, uint64_t argc, char * argv[], uint64_t gr
 uint64_t kill(uint64_t pid);
 uint64_t getPid();
 void ps();
-void psFd(uint64_t outFd);
 uint64_t setPriority(uint64_t pid, uint64_t n);
 uint64_t changeState(uint64_t pid);
 
@@ -71,11 +69,8 @@ int pipeOpen(char * name);
 /* Close an existing named pipe */
 void pipeClose(int fd);
 
-/* List all pipes (STDOUT) */
+/* List all pipes */
 void pipeStatus();
-
-/* List all pipes (outFd) */
-void pipeStatusFd(uint64_t outFd);
 
 /* Create a new named semaphore */
 uint64_t newSem(char * name, uint64_t init);
@@ -92,11 +87,8 @@ void semWait(uint64_t sem);
 /* Post on a named semaphore */
 void semPost(uint64_t sem);
 
-/* List all semaphores (STDOUT) */
+/* List all semaphores */
 void semStatus();
-
-/* List all semaphores (outFd) */
-void semStatusFd(uint64_t outFd);
 
 extern uint64_t syscall(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
