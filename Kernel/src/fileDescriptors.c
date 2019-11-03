@@ -217,7 +217,6 @@ static nodeFd * search_fd(int fd) {
     return 0;
 }
 
-// TODO: ver si malloquear el espacio para el buffer
 /* Add new FileDescriptor node to the list */
 static nodeFd * add_fd_list(char* name) {
     /* Create a new fileDescriptor structure */
