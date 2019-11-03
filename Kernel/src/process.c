@@ -152,13 +152,15 @@ fdNode * add_process_fd(int fd) {
     return node;
 }
 
-/* Remove a filedescriptor from process list */
-void remove_process_fd(int fd) {
+/* Remove a filedescriptor from process list. Returns 1 if removed, 0 if not */
+int remove_process_fd(int fd) {
+    int removed = 0;
+
     /* Create aux process from current to modify fd List */
     nodeScheduler * current = get_current();
-    if (current == 0) return;
+    if (current == 0) return 0;
     process p = current->process;
-    if (p.firstFd == 0) return;
+    if (p.firstFd == 0) return 0;
 
     /* Check if fd already exists in process list */
     fdNode * iterator = p.firstFd;
@@ -174,6 +176,7 @@ void remove_process_fd(int fd) {
                 prev->next = iterator->next;
                 free(iterator);
             }
+            removed = 1;
             break;
         }
         prev = iterator;
@@ -182,6 +185,8 @@ void remove_process_fd(int fd) {
 
     /* Update node from scheduler */
     get_current()->process = p;
+
+    return removed;
 }
 
 /* Return realFd (Alias) fro the current process or -1 if not listed */

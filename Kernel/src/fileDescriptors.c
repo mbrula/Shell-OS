@@ -98,7 +98,7 @@ void read(int fd, char * buffer, int count) {
     /* Read COUNT characters from buffer (or until EOF if read) */
     for (i = node->data.read_index; i < (node->data.read_index + count) && eof == 0; i++) {
         *buffer = node->data.buffer[i % BUFFER_SIZE];
-        if (*buffer == EOF) 
+        if (*buffer == EOF)
             eof = 1;
         buffer++;
     }
@@ -128,7 +128,7 @@ int new_pipe(char * name) {
     if (node == 0) return -1;
 
     /* Flag the fileDescriptor as a pipe */
-    node->data.pipe = 1;
+    node->data.pipe = 2;
 
     /* Add the node to process fileDescriptor list */
     add_process_fd(node->data.fd);
@@ -142,6 +142,8 @@ int open_pipe(char * name) {
     nodeFd * node = search_name(name);
     if (node == 0 || node->data.pipe == 0) return -1;
 
+    node->data.pipe++;
+
     /* Add the node to process fileDescriptor list */
     add_process_fd(node->data.fd);
 
@@ -154,6 +156,8 @@ void close_pipe(int fd) {
     nodeFd * node = search_fd(fd);
     if (node == 0 || node->data.pipe == 0) return;
 
+    if (node->data.pipe > 1) node->data.pipe--;
+
     /* Check if someone else is waiting to write */
     mutNode * mut = node->data.mutWrite;
     if (mut != 0 && mut->mutex.lock == 0 && mut->mutex.blocked == 0) {
@@ -161,19 +165,21 @@ void close_pipe(int fd) {
         char eof = EOF;
         write(fd, &eof, 1);
     }
-
+    
     /* Remove the node from process fileDescriptor list */
     remove_process_fd(fd);
+
 }
 
 /* Prints all Pipes */
 void show_all_pipes() {
     int printed = 0;
     nodeFd * iterator = first;
-    print("\nName\t\tState\t\tBlocked Processes\n");
+    print("\nName\t\t\tState\t\tBlocked Processes\n");
     while (iterator != 0) {
-        if (iterator->data.pipe) {
+        if (iterator->data.pipe > 0) {
             print(iterator->data.name); print("\t\t");
+            print((iterator->data.pipe > 1) ? "Open" : "Closed"); print("\t\t");
             print_blocked_processes(iterator->data.mutCant);
             print_blocked_processes(iterator->data.mutRead);
             print_blocked_processes(iterator->data.mutWrite);
@@ -221,8 +227,9 @@ static nodeFd * add_fd_list(char* name) {
         return 0;
     }
     stringcp(newFd->data.name, name);
-    
+
     /* Add the node to the list, with the next fd number */
+    newFd->next = 0;
     if (first == 0) {
         newFd->data.fd = 0;
         first = newFd;

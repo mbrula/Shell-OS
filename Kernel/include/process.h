@@ -63,8 +63,8 @@ void print_process_stack(process p);
 /* Add new filedescriptor to process list */
 fdNode * add_process_fd(int fd);
 
-/* Remove a filedescriptor from process list */
-void remove_process_fd(int fd);
+/* Remove a filedescriptor from process list. Returns 1 if removed, 0 if not */
+int remove_process_fd(int fd);
 
 /* Return realFd (Alias) fro the current process or -1 if not listed */
 int get_process_alias(int fd);
