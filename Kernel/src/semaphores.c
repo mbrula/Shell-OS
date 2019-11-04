@@ -96,17 +96,10 @@ void post_sem(semNode * sem) {
     post_mutex(sem->sem.mutex);
 }
 
-// TODO: Check lo que hacemos con el close y deallocate
 /* Close an existing semaphore */
 void close_sem(semNode * sem) {
-    deallocate_sem(sem, get_pid());
-}
-
-/* Deallocate system resources aquired by process for semaphore */
-void deallocate_sem(semNode * sem, uint64_t pid) {
-    /* Deallocate from each mutex */
-    deallocate_mutex(sem->sem.mutex, pid);
-    deallocate_mutex(sem->sem.delay, pid);
+    close_mutex(sem->sem.mutex);
+    close_mutex(sem->sem.delay);
 }
 
 /* Print all semaphores */

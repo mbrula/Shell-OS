@@ -31,9 +31,6 @@ void post_sem(semNode * sem);
 /* Close an existing semaphore */
 void close_sem(semNode * sem);
 
-/* Deallocate system resources aquired by process for semaphore */
-void deallocate_sem(semNode * sem, uint64_t pid);
-
 /* Print all semaphores */
 void show_all_sem();
 

@@ -489,8 +489,8 @@ static node * get_node(node * n, uint8_t * ptr) {
     if (n->n.level == memory.minLevel) return 0;
 
     /* Recursive search on childs */
-    node * aux = get_block(n->n.left, ptr);
-    if (aux == 0) aux = get_block(n->n.right, ptr);
+    node * aux = get_node(n->n.left, ptr);
+    if (aux == 0) aux = get_node(n->n.right, ptr);
     return aux;
 }
 

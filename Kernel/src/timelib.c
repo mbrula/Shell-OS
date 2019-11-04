@@ -11,7 +11,6 @@
 static void add_node_T(uint64_t pid, uint64_t time);
 static void update_list();
 static void remove_next_T(nodeTime * node);
-static void print_list_time();
 
 /* static variables */
 static nodeTime * firstT = 0;
@@ -104,17 +103,4 @@ static void add_node_T(uint64_t pid, uint64_t time) {
 
     if (firstT != 0) node->next = firstT;    
     firstT = node;
-}
-
-// TODO: ESTA FUNCION NO SE USA NUNCA. VUELA o se QUEDA?
-/* Auxiliary fucntion to print nodes */
-static void print_list_time() {
-    print("\nList of sleep nodes:\n");
-    nodeTime * iterator = firstT;
-    uint64_t count = 0;
-    while (iterator != 0) {
-        print("INDEX: %d - PID: %d - REQ: %d\n", count++, iterator->pid, iterator->time);
-        iterator = iterator->next;
-    }
-    
 }
