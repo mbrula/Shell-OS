@@ -1,6 +1,17 @@
-target remote 192.168.0.16:1234
+target remote 192.168.122.1:1234
 add-symbol-file Kernel/kernel.elf 0x100000
-add-symbol-file Userland/0000-sampleCodeModule.elf 0x400000
+add-symbol-file Userland/0000-shell.elf 0x400000
+add-symbol-file Userland/0000-processA.elf 0x700000
+add-symbol-file Userland/0000-processB.elf 0x800000
+add-symbol-file Userland/0000-idle.elf 0x900000
+add-symbol-file Userland/0000-sleep.elf 0xA00000
+add-symbol-file Userland/0000-loop.elf 0xB00000
+add-symbol-file Userland/0000-cat.elf 0xC00000
+add-symbol-file Userland/0000-wc.elf 0xD00000
+add-symbol-file Userland/0000-filter.elf 0xE00000
+add-symbol-file Userland/0000-phylo.elf 0xF00000
+add-symbol-file Userland/0000-phyloProcess.elf 0x1000000
+add-symbol-file Userland/0000-phyloView.elf 0x1100000
 
 python
 

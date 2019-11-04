@@ -8,7 +8,7 @@ OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
 LOADERSRC=loader.asm
 
 # Here put -DBUDDY if you want to use buddy allocation system 
-MM = -DBUDDY
+MM = 
 
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
