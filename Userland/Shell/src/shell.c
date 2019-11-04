@@ -306,10 +306,6 @@ void nice_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
             case 0:
                 puts("\nPID Invalido.");
                 break;
-                // TODO: Revisar si esto de abajo no va mas
-            // case 2:
-            //     puts("\nPrioridad Invalida.");
-            //     break;
             default: // case 1
                 puts("\nChange successfull");
                 break;
