@@ -15,7 +15,7 @@ int main(int argc, char const * argv[]) {
 
 	sleep(1000);
 
-	char arg1[100];
+	char arg1[100]; // TODO: No es char[10]??
 	itoa((uint64_t) &countParaPrueba, arg1, 10);
 	char * argv2[] = {arg1, 0, 0};
     int argc2 = 1;
@@ -34,20 +34,3 @@ int main(int argc, char const * argv[]) {
 	
 	return 0;
 }
-
-// int main(int argc, char const *argv[]) {
-// 	int i = 0;
-//     while (1) {
-// 		i++;
-// 		puts("\n########## pA ##########\n");
-// 		// ps();
-// 		sleep(1000);
-// 		// if (i == 5) {
-// 		// 	kill(2);
-// 		// }
-// 		// if (i == 10) {
-// 		// 	kill(1);
-// 		// }
-// 	}	
-// 	return 0;
-// } 

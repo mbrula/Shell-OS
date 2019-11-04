@@ -30,12 +30,3 @@ int main(int argc, char const * argv[]) {
 
 	return 0;
 }
-
-// int main(int argc, char const *argv[]) {
-//     while (1) {
-// 		puts("\n----------- pB -----------\n");
-// 		// ps();
-// 		sleep(500);
-// 	}	
-// 	return 0;
-// } 
