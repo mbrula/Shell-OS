@@ -24,7 +24,7 @@ int main(int argc, char const * argv[]) {
 	printf("\n--PHYLO VIEW - totalNumber: %d", *totalNumber);
 
 	while(1){
-		sleep(3000);
+		sleep(PRINT_TIME);
 		semWait(mutex);
 		printf("\n\n\t\tTABLE STATE\n");
 		for(int i = 0; i < (*totalNumber) ; i++) {
