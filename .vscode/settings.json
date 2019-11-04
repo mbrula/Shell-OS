@@ -15,30 +15,7 @@
         "Userland": false
     },
     "files.associations": {
-        "process.h": "c",
-        "clib.h": "c",
-        "moduleaddresses.h": "c",
-        "algorithm": "c",
-        "processa.h": "c",
-        "stdint.h": "c",
-        "mutex.h": "c",
-        "filedescriptors.h": "c",
-        "optional": "cpp",
-        "istream": "cpp",
-        "ostream": "cpp",
-        "system_error": "cpp",
-        "array": "cpp",
-        "tuple": "cpp",
-        "type_traits": "cpp",
-        "utility": "cpp",
-        "pixelmap.h": "c",
-        "semaphore.h": "c",
-        "lib.h": "c",
-        "sem.h": "c",
-        "timelib.h": "c",
-        "utils.h": "c",
-        "stdarg.h": "c",
-        "phylo.h": "c"
+        
     },
     "C_Cpp.dimInactiveRegions": false
 }
