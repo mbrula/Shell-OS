@@ -11,10 +11,9 @@
 #include <process.h>
 
 /* Static auxiliary functions */
-/* Free the parent process if required */
 static void free_parent(process p);
-/* Add filedescriptor to process list with Alias when create */
 static fdNode * add_process_alias(int oldFd, int newFd);
+static void remove_fdlist(process p);
 
 /* Static count of the pids given */
 static uint64_t c_pid = 0;
@@ -67,12 +66,7 @@ process create_process(void * entryPoint, char * name, level context, uint64_t a
 
 /* Frees all the resources used by the process */
 static void free_resources(process p) {
-    fdNode * iterator = p.firstFd;
-    while (iterator != 0){
-        fdNode * prev = iterator;
-        iterator = iterator->next;
-        free(prev);
-    }  
+    remove_fdlist(p);
     switch (p.res) {
         case SEM: deallocate_mutex(p.mutex, p.pid);
         case TIME: remove_node_T(p.pid);
@@ -87,10 +81,9 @@ void remove(process p) {
     free(p.name);
 }
 
-// TODO: Ver que no puedan killear al phylo??
 /* If a valid process, kill (used when ctrl + C) */
 void sig_int() {
-    if (get_pid() > 1) kill_current();
+    if (get_pid() > 1 || !stringcmp(get_current()->process.name, "PHYLO")) kill_current();
 }
 
 /* Print process stack */
@@ -114,7 +107,6 @@ static void free_parent(process p) {
         set_state(p.ppid, READY);
 }
 
-// TODO: CHECK current node (no cambia para el final, no?)
 /* Add new filedescriptor to process list */
 fdNode * add_process_fd(int fd) {
     /* Create aux process from current to modify fd List */
@@ -216,4 +208,13 @@ static fdNode * add_process_alias(int oldFd, int newFd) {
     node->next = 0;
 
     return node;
+}
+
+static void remove_fdlist(process p) {
+    fdNode * iterator = p.firstFd;
+    while (iterator != 0){
+        fdNode * prev = iterator;
+        iterator = iterator->next;
+        free(prev);
+    }  
 }

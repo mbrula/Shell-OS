@@ -136,7 +136,7 @@ uint64_t kill(uint64_t pid) {
         current = 0;
         stage = STARTHALT;
         print("\nNo more proceses to run");
-        hang(); // TODO, is this needed? No need to kill cpu
+        hang();
         return pid;
     }
 

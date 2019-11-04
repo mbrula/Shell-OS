@@ -10,8 +10,9 @@
 
 static mutNode * first = 0;
 
-/* Check if a mutex pointer belongs to the mutex list */
+/* Static  auxiliary functions */
 static int search_mutex(mutNode * mutex);
+static void close_pid_mutex(mutNode * mutex, uint64_t pid);
 
 /* Opens an existing mutex */
 mutNode * open_mutex(char * name) {
@@ -119,11 +120,9 @@ void post_mutex(mutNode * mutex) {
 
 /* Close an existing mutex */
 void close_mutex(mutNode * mutex) {
-    deallocate_mutex(mutex, get_pid());
+    close_pid_mutex(mutex, get_pid());
 }
 
-// TODO: Test deallocate. 
-// PUEDE SER QUE ESTE MAL QUE HAGA LO MISMO uno que hizo close? SI cierra un semaforo, lo saca de todos
 /* Deallocate system resources aquired by process for mutex */
 void deallocate_mutex(mutNode * mutex, uint64_t pid) {
     if (!search_mutex(mutex) || pid == 0) return;
@@ -131,36 +130,13 @@ void deallocate_mutex(mutNode * mutex, uint64_t pid) {
     /* Post every mutex aquired by PID process if their init was unlocked */
     mutNode * pidIt = first;
     while (pidIt != 0) {
-        if (pidIt->mutex.pidAquired == pid && pidIt->mutex.init == 0)
-            post_mutex(pidIt);
+        if (pidIt->mutex.pidAquired == pid)
+            if (pidIt->mutex.init == 0)
+                post_mutex(pidIt);
+            else close_pid_mutex(pidIt, pid);
+        else close_pid_mutex(pidIt, pid);
         pidIt = pidIt->next;
-    }
-
-    /* Check if mutex is locked by the PID process */
-    if (mutex->mutex.pidAquired == pid) return;
-
-    waitNodeMut * iterator = mutex->mutex.blocked;
-    waitNodeMut * prev = 0;
-
-    /* Check if blocked list is empty */
-    if (iterator == 0) return;
-
-    /* Search for PID in blocked list */
-    while (iterator != 0 && iterator->pid != pid) {
-        prev = iterator;
-        iterator = iterator->next;
-    }
-
-    /* PID not found */
-    if (iterator == 0) return;
-
-    /* PID found. Update blocked list */
-    if (prev == 0) mutex->mutex.blocked = iterator->next;
-    else prev->next = iterator->next;
-    if (iterator->next == 0) mutex->mutex.last = prev;
-
-    /* Free the waitNodeMut block */
-    free((void *) iterator);
+    }    
 }
 
 /* Print all mutexes */
@@ -191,6 +167,32 @@ static int search_mutex(mutNode * mutex) {
         iterator = iterator->next;
     }
     return 0;
+}
+
+/* Close an existing mutex for the process of the given pid */
+static void close_pid_mutex(mutNode * mutex, uint64_t pid) {
+    waitNodeMut * iterator = mutex->mutex.blocked;
+    waitNodeMut * prev = 0;
+
+    /* Check if blocked list is empty */
+    if (iterator == 0) return;
+
+    /* Search for PID in blocked list */
+    while (iterator != 0 && iterator->pid != pid) {
+        prev = iterator;
+        iterator = iterator->next;
+    }
+
+    /* PID not found */
+    if (iterator == 0) return;
+
+    /* PID found. Update blocked list */
+    if (prev == 0) mutex->mutex.blocked = iterator->next;
+    else prev->next = iterator->next;
+    if (iterator->next == 0) mutex->mutex.last = prev;
+
+    /* Free the waitNodeMut block */
+    free((void *) iterator);
 }
 
 /* Print list of blocked processes */
