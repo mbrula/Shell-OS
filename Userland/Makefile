@@ -1,6 +1,6 @@
 include Makefile.inc
 
-all: library processA processB shell idle sleep loop cat wc filter phylo
+all: library processA processB shell idle sleep loop cat wc filter phylo phyloProcess phyloView
 
 library:
 	cd Library; make
@@ -35,6 +35,12 @@ filter:
 phylo:
 	cd Phylo; make
 
+phyloProcess:
+	cd PhyloProcess; make
+
+phyloView:
+	cd PhyloView; make
+
 clean:
 	cd Library; make clean
 	cd ProcessA; make clean
@@ -47,7 +53,9 @@ clean:
 	cd Wc; make clean
 	cd Filter; make clean
 	cd Phylo; make clean
+	cd PhyloProcess; make clean
+	cd PhyloView; make clean
 	rm -rf *.bin
 
 
-.PHONY: library processA processB shell idle sleep loop cat wc filter phylo all clean
+.PHONY: library processA processB shell idle sleep loop cat wc filter phylo phyloProcess phyloView all clean

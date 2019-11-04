@@ -53,7 +53,9 @@ void * initializeKernelBinary() {
 		catModuleAddress,
 		wcModuleAddress,
 		filterModuleAddress,
-		phyloModuleAddress
+		phyloModuleAddress,
+		phyloProcessModuleAddress,
+		phyloViewModuleAddress
 	};
 
 	/* Gets modules final address */

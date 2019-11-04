@@ -110,6 +110,10 @@ static void * get_module_address(char * name) {
         return processAModuleAddress;
     if (stringcmp(name, "PROCESS_B"))
         return processBModuleAddress;
+    if (stringcmp(name, "PHYLO_PROCESS"))
+        return phyloProcessModuleAddress;
+    if (stringcmp(name, "PHYLO_VIEW"))
+        return phyloViewModuleAddress;
     return 0;
 }
 
