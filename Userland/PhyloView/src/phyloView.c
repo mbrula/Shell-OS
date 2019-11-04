@@ -14,7 +14,14 @@ int main(int argc, char const * argv[]) {
 	uint64_t mutex = semOpen(PH_MUTEX);
 	if (mutex == 0) return 1;
 
-	printf("\n--PHYLO VIEW - TOTAL NUM: %d", *totalNumber);
+	// char msg[MAX_LENGTH];
+	// int fd = pipeOpen(PH_PIPE);
+	// if (fd < 0) return 1;
+	// getsFd(msg, MAX_LENGTH, fd);
+	// printf("\n--PHYLO VIEW - MSG FROM FATHER: %s", msg);
+	// pipeClose(fd);
+
+	printf("\n--PHYLO VIEW - totalNumber: %d", *totalNumber);
 
 	while(1){
 		sleep(3000);

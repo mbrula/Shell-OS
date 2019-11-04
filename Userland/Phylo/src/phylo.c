@@ -25,6 +25,11 @@ int main(int argc, char const * argv[]) {
 	mutex = newSem(PH_MUTEX, 1);
 	if (mutex == 0) return 1;
 
+	// int fd = newPipe(PH_PIPE);
+	// if (fd < 0) return 1;
+	// printfFd(fd, "\nMensaje para vista. PID padre es %d", getPid());
+	// pipeClose(fd);
+
 	puts("\n\n-- Programa de Filosofos --\n");
 	
 	initialize();

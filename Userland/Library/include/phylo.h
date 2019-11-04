@@ -7,6 +7,7 @@
 #define MAX_PHYLO   15
 #define PH_MUTEX    "mutexPhylo"
 #define PH_NAME     "phyloNumber"
+#define PH_PIPE     "pipePhylo"
 
 #define THINK_TIME  2000
 #define EAT_TIME    3000
