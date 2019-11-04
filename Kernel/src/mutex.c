@@ -122,7 +122,8 @@ void close_mutex(mutNode * mutex) {
     deallocate_mutex(mutex, get_pid());
 }
 
-// TODO: Test deallocate
+// TODO: Test deallocate. 
+// PUEDE SER QUE ESTE MAL QUE HAGA LO MISMO uno que hizo close? SI cierra un semaforo, lo saca de todos
 /* Deallocate system resources aquired by process for mutex */
 void deallocate_mutex(mutNode * mutex, uint64_t pid) {
     if (!search_mutex(mutex) || pid == 0) return;
