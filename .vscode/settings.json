@@ -15,7 +15,8 @@
         "Userland": false
     },
     "files.associations": {
-        "strings.h": "c"
+        "strings.h": "c",
+        "phylo.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }
