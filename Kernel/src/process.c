@@ -83,7 +83,11 @@ void remove(process p) {
 
 /* If a valid process, kill (used when ctrl + C) */
 void sig_int() {
-    if (get_pid() > 1 || !stringcmp(get_current()->process.name, "PHYLO")) kill_current();
+    uint64_t pid = get_pid();
+    if (pid > 1 && !stringcmp(get_current()->process.name, "PHYLO")) {
+        print("\n\t Killed process %d\n", pid);
+        kill_current();
+    }
 }
 
 /* Print process stack */

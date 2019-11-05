@@ -154,7 +154,7 @@ void help_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
     putsFd("\nhelp ~ Muestra los comandos validos", outFd);
     putsFd("\ndate ~ Muestra la fecha actual", outFd);
     putsFd("\ntime ~ Muestra la hora actual", outFd);
-    putsFd("\nsleep NUMBER ~ Frena el funcionamiento un numero de segundos a ingresar", outFd);
+    putsFd("\nsleep NUMBER ~ Frena el funcionamiento NUMBER segundos", outFd);
     putsFd("\nclear ~ Limpia la consola", outFd);
     putsFd("\nbeep ~ Emite un sonido", outFd);
     putsFd("\ndoor ~ Hay alguien en la puerta", outFd);
@@ -163,9 +163,9 @@ void help_cmd(int argc, char * argv[], int ground, int inFd, int outFd) {
 
     putsFd("\nmem ~ Imprime el estado de la memoria", outFd);
     putsFd("\nps ~ Imprime la lista de todos los procesos con sus propiedades", outFd);
-    putsFd("\nkill ~ Mata al proceso de ID recibido", outFd);
-    putsFd("\nnice ~ Cambia la prioridad del proceso de ID recibido a la prioridad recibida", outFd);
-    putsFd("\nblock ~ Cambia el estado del proceso de ID recibido entre BLOCKED y READY", outFd);
+    putsFd("\nkill PID ~ Mata al proceso de ID recibido", outFd);
+    putsFd("\nnice PID PRIORITY ~ Cambia la prioridad del proceso de ID recibido a la prioridad recibida", outFd);
+    putsFd("\nblock PID ~ Cambia el estado del proceso de ID recibido entre BLOCKED y READY", outFd);
     putsFd("\nloop ~ Ejecuta un proceso que imprime su ID con un saludo cada 3s en un loop", outFd);
     putsFd("\ncat ~ Ejecuta un proceso que imprime el STDIN tal como lo recibe", outFd);
     putsFd("\nwc ~ Ejecuta un proceso que cuenta la cantidad de lineas del input", outFd);
