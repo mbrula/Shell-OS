@@ -25,13 +25,9 @@ int main(int argc, char const * argv[]) {
 	mutex = newSem(PH_MUTEX, 1);
 	if (mutex == 0) return 1;
 
-	// int fd = newPipe(PH_PIPE);
-	// if (fd < 0) return 1;
-	// printfFd(fd, "\nMensaje para vista. PID padre es %d", getPid());
-	// pipeClose(fd);
-
 	puts("\n\n-- Programa de Filosofos --\n");
-	
+	ph_qty = 0;
+
 	initialize();
 
 	char arg1[10], arg2[10];
@@ -99,6 +95,7 @@ void addPhylo(){
 
 void removePhylo(){
 	semWait(mutex);
+	ph_qty--;
 	kill(pids[ph_qty]);
 	semClose(sem[ph_qty]);
 	int i = 0;
@@ -106,13 +103,12 @@ void removePhylo(){
 		free(args[i][ph_qty]);
 	free(argvs[ph_qty]);
 	printf("\n\t\tRemoved Phylo: %d", ph_qty);
-	ph_qty--;
 	semPost(mutex);
 }
 
 void quitPhylo(){
-	int i = 0;
-	for (i = 0; i < ph_qty; i++) {
+	int i = 0, qty = ph_qty;
+	for (i = 0; i < qty; i++) {
 		removePhylo();
 	}
 }
