@@ -1,4 +1,0 @@
-www.viva64.com/en/w	1	err	Help: The documentation for all analyzer warnings is available here: https://www.viva64.com/en/w/.
-/root/Userland/Library/src/clib.c	303	warn	V557 Array overrun is possible. The value of 'len' index could reach 10.
-/root/Userland/ProcessA/src/processA.c	32	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
-/root/Userland/Shell/src/shell.c	236	err	V609 Divide by zero. Denominator 'b' == 0.
